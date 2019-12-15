@@ -88,5 +88,11 @@ src
   - `cd android && ./gradlew assembleRelease`
 
 
+### 📄 License
+
+This application is not open source and is licensed under **Fair Source 1 (v0.9)**
+
+Please read the [License](License.MD)
+
 ### 📄 Copyright
 © All rights reserved to [CNepho](https://cnepho.com/) SARL
