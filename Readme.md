@@ -25,24 +25,24 @@
 
 <p align="center">
   <a href="https://webchat.freenode.net/#goliquid">
-    <img src="https://webchat.freenode.net/static/favicon.png" alt="Freenode" width="60" />
+    <img src="https://webchat.freenode.net/static/favicon.png" alt="Freenode" width="40" />
   </a>
   <a href="https://twitter.com/GoLiquidApp">
-    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/9/9f/Twitter_bird_logo_2012.svg/150px-Twitter_bird_logo_2012.svg.png" alt="Twitter" width="60" />
+    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/9/9f/Twitter_bird_logo_2012.svg/150px-Twitter_bird_logo_2012.svg.png" alt="Twitter" width="40" />
   </a>
   <a href="https://t.me/goliquid">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/768px-Telegram_logo.svg.png" alt="Telegram" width="60" />
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/768px-Telegram_logo.svg.png" alt="Telegram" width="40" />
   </a>
 </p>
 
 
-## Summary
+### Summary
 <p align="center">
 Liquid is a free software for trading on crypto currency exchanges.<br/>
 It uses AES256 to encrypt your credentials and stores them safe in your device hence it's secured and reliable.  
 </p>
 
-## 🚀 Features
+### 🚀 Features
 Liquid offers lots of features that will help you in your tradings, below is a list of current features:
 - Real time order book showing current market size and price
 - Real time crypto currency prices
@@ -57,7 +57,7 @@ Liquid offers lots of features that will help you in your tradings, below is a l
 - Support for all kind of crypto currencies available on BitMEX
 - Advanced options for experienced users, like Dead-Man feature
 
-## 📖 Folder Structure
+### 📖 Folder Structure
 ```
 src
     api
@@ -77,16 +77,16 @@ src
     setupTests.js               (Tests setups, later to be used for unit tests)
 ```
 
-## 🎉 Building notes
+### 🎉 Building notes
 
 - When creating a production release make sure to set **debug** flag to `false` in `src/config.js`
 
-### IOS release:  
-- `cd ios && fastlane beta ` this will create a new release on TestFlight
+- IOS release:  
+  - `cd ios && fastlane beta ` this will create a new release on TestFlight
 
-### Android release:  
-- `cd android && ./gradlew assembleRelease`
+- Android release:  
+  - `cd android && ./gradlew assembleRelease`
 
 
-## 📄 Copyright
+### 📄 Copyright
 © All rights reserved to [CNepho](https://cnepho.com/) SARL
