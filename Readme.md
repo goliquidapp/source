@@ -4,7 +4,7 @@
   </a>
 </h1>
 <p align="center">
-    <img src="http://159.89.50.84/Rajab/liquid-community/raw/master/src/resources/icons/icon.png" width="128">
+    <img src="https://goliquid.app/assets/imgs/logo.svg" width="128">
 </p>
 <p align="center">
   <strong>Easy, Efficient and Secure!</strong><br>
