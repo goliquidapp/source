@@ -87,6 +87,9 @@ src
 - Android release:  
   - `cd android && ./gradlew assembleRelease`
 
+- Binaries:
+  - [Download Universal APK]('app-universal-release.apk')
+  - MD5 93AF3A0FC150A8244836F85BE5E42802
 
 ### 📄 License
 
