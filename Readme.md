@@ -12,11 +12,37 @@
 </p>
 
 <p align="center">
-Liquid is a free software for trading on crypto currency exchanges.  
+  <a href="https://play.google.com/store/apps/details?id=com.bitmex_trading">
+    <img src="https://goliquid.app/assets/imgs/google-play.svg" alt="Download on Play Store" width="220" />
+  </a>
+  <a href="https://apps.apple.com/us/app/l1qu1d/id1482273711?ls=1">
+    <img src="https://goliquid.app/assets/imgs/apple-store.svg" alt="Download on Apple Store" width="220" />
+  </a>
+  <a href="https://testflight.apple.com/join/9PE9fAMf">
+    <img src="https://goliquid.app/assets/imgs/testflight.svg" alt="Join beta" width="220" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://webchat.freenode.net/#goliquid">
+    <img src="https://webchat.freenode.net/static/favicon.png" alt="Freenode" width="60" />
+  </a>
+  <a href="https://twitter.com/GoLiquidApp">
+    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/9/9f/Twitter_bird_logo_2012.svg/150px-Twitter_bird_logo_2012.svg.png" alt="Twitter" width="60" />
+  </a>
+  <a href="https://t.me/goliquid">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/768px-Telegram_logo.svg.png" alt="Telegram" width="60" />
+  </a>
+</p>
+
+
+## Summary
+<p align="center">
+Liquid is a free software for trading on crypto currency exchanges.<br/>
 It uses AES256 to encrypt your credentials and stores them safe in your device hence it's secured and reliable.  
 </p>
 
-## Features
+## 🚀 Features
 Liquid offers lots of features that will help you in your tradings, below is a list of current features:
 - Real time order book showing current market size and price
 - Real time crypto currency prices
@@ -31,7 +57,7 @@ Liquid offers lots of features that will help you in your tradings, below is a l
 - Support for all kind of crypto currencies available on BitMEX
 - Advanced options for experienced users, like Dead-Man feature
 
-## Folder Structure
+## 📖 Folder Structure
 ```
 src
     api
@@ -51,7 +77,7 @@ src
     setupTests.js               (Tests setups, later to be used for unit tests)
 ```
 
-## Building notes
+## 🎉 Building notes
 
 - When creating a production release make sure to set **debug** flag to `false` in `src/config.js`
 
@@ -62,5 +88,5 @@ src
 - `cd android && ./gradlew assembleRelease`
 
 
-## Copyright
+## 📄 Copyright
 © All rights reserved to [CNepho](https://cnepho.com/) SARL
