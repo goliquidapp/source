@@ -29,3 +29,7 @@ src
 
 ### Android release:  
 - `cd android && ./gradlew assembleRelease`
+
+
+## Copyright
+© All rights reserved to CNepho SARL
