@@ -1,6 +1,20 @@
-# Liquid
+<h1 align="center">
+  <a href="https://goliquid.app/">
+    Liquid
+  </a>
+</h1>
+<p align="center">
+    <img src="http://159.89.50.84/Rajab/liquid-community/raw/master/src/resources/icons/icon.png" width="128">
+</p>
+<p align="center">
+  <strong>Easy, Efficient and Secure!</strong><br>
+  Any Time, Any Place trading
+</p>
 
-Liquid is a free software for trading on crypto currency exchanges. It uses AES256 to encrypt your credentials and stores them safe in your device hence it's secured and reliable.  
+<p align="center">
+Liquid is a free software for trading on crypto currency exchanges.  
+It uses AES256 to encrypt your credentials and stores them safe in your device hence it's secured and reliable.  
+</p>
 
 ## Features
 Liquid offers lots of features that will help you in your tradings, below is a list of current features:
