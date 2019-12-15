@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "838802870767",
+    "firebase_url": "https://l1qu1d.firebaseio.com",
+    "project_id": "l1qu1d",
+    "storage_bucket": "l1qu1d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:838802870767:android:b833e24ab1cc8ae380261a",
+        "android_client_info": {
+          "package_name": "com.bitmex_trading"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "838802870767-nvoc3f9gmi9v9gijemca44oa5h3vlfgj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXjMDtbyow91V0sul9x_qhS6zTwz5JD68"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "838802870767-nvoc3f9gmi9v9gijemca44oa5h3vlfgj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "838802870767-mieu3ant50r1535e4iihuojc7ja249nl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.cneph.equilibrium"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

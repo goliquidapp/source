@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Testing BarList component renders correctly 1`] = `
+<View
+  style={
+    Object {
+      "opacity": 0,
+      "position": "relative",
+    }
+  }
+>
+  <RCTScrollView
+    contentContainerStyle={
+      Object {
+        "alignItems": "center",
+        "flexDirection": "row",
+      }
+    }
+    directionalLockEnabled={true}
+    horizontal={true}
+    pagingEnabled={true}
+    scrollEnabled={true}
+    showsHorizontalScrollIndicator={false}
+  >
+    <View>
+      <Text>
+        Text 1
+      </Text>
+      <View>
+        <Text>
+          View 1
+        </Text>
+      </View>
+      <View>
+        <Text>
+          View 2
+        </Text>
+      </View>
+      <View>
+        <Text>
+          View 3
+        </Text>
+      </View>
+      <Text>
+        Text 2
+      </Text>
+    </View>
+  </RCTScrollView>
+</View>
+`;

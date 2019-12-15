@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Testing Button component renders correctly 1`] = `
+<View
+  accessible={true}
+  clickable={false}
+  isTVSelectable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#5367FF",
+      "borderRadius": 8,
+      "elevation": 5,
+      "flexDirection": "row",
+      "justifyContent": "center",
+      "opacity": 1,
+      "paddingHorizontal": 30,
+      "paddingVertical": 10,
+    }
+  }
+>
+  <Text
+    style={
+      Array [
+        Object {
+          "color": "#FFFFFF",
+          "fontSize": 20,
+        },
+        undefined,
+      ]
+    }
+  >
+    Click me!
+  </Text>
+  <View>
+    <Text>
+      I am a child
+    </Text>
+  </View>
+</View>
+`;

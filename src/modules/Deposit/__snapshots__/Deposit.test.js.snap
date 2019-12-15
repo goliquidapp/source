@@ -1,0 +1,802 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Testing Deposit module mounts and renders with address 1`] = `
+<View>
+  <View>
+    <Text
+      style={
+        Object {
+          "alignSelf": "center",
+          "color": "#FFFFFF",
+          "fontSize": 18,
+          "fontWeight": "bold",
+          "marginLeft": "auto",
+          "marginRight": "auto",
+          "marginVertical": 20,
+        }
+      }
+    >
+      Deposit
+    </Text>
+  </View>
+  <View
+    style={
+      Object {
+        "alignItems": "center",
+        "flexDirection": "column",
+        "justifyContent": "center",
+        "width": "100%",
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "alignSelf": "center",
+          "backgroundColor": "#FFFFFF",
+          "borderColor": "#96969C",
+          "borderWidth": 1,
+          "elevation": 5,
+          "marginVertical": 20,
+          "opacity": 0,
+          "padding": 10,
+        }
+      }
+    >
+      <View
+        accessible={true}
+        clickable={true}
+        isTVSelectable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "opacity": 1,
+          }
+        }
+      >
+        <RNSVGSvgView
+          bbHeight={200}
+          bbWidth={200}
+          focusable={false}
+          height={200}
+          style={
+            Array [
+              Object {
+                "backgroundColor": "transparent",
+                "borderWidth": 0,
+              },
+              undefined,
+              Object {
+                "opacity": 1,
+              },
+              Object {
+                "flex": 0,
+                "height": 200,
+                "width": 200,
+              },
+            ]
+          }
+          width={200}
+        >
+          <RNSVGGroup
+            fill={
+              Array [
+                0,
+                4278190080,
+              ]
+            }
+            fillOpacity={1}
+            fillRule={1}
+            font={Object {}}
+            matrix={
+              Array [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0,
+              ]
+            }
+            opacity={1}
+            originX={0}
+            originY={0}
+            propList={Array []}
+            rotation={0}
+            scaleX={1}
+            scaleY={1}
+            skewX={0}
+            skewY={0}
+            stroke={null}
+            strokeDasharray={null}
+            strokeDashoffset={null}
+            strokeLinecap={0}
+            strokeLinejoin={0}
+            strokeMiterlimit={4}
+            strokeOpacity={1}
+            strokeWidth={1}
+            vectorEffect={0}
+            x={0}
+            y={0}
+          >
+            <RNSVGDefs>
+              <RNSVGClipPath
+                name="clip-wrapper"
+              >
+                <RNSVGRect
+                  fill={
+                    Array [
+                      0,
+                      4278190080,
+                    ]
+                  }
+                  fillOpacity={1}
+                  fillRule={1}
+                  height={64}
+                  matrix={
+                    Array [
+                      1,
+                      0,
+                      0,
+                      1,
+                      0,
+                      0,
+                    ]
+                  }
+                  opacity={1}
+                  originX={0}
+                  originY={0}
+                  propList={Array []}
+                  rotation={0}
+                  rx={0}
+                  ry={0}
+                  scaleX={1}
+                  scaleY={1}
+                  skewX={0}
+                  skewY={0}
+                  stroke={null}
+                  strokeDasharray={null}
+                  strokeDashoffset={null}
+                  strokeLinecap={0}
+                  strokeLinejoin={0}
+                  strokeMiterlimit={4}
+                  strokeOpacity={1}
+                  strokeWidth={1}
+                  vectorEffect={0}
+                  width={64}
+                  x={0}
+                  y={0}
+                />
+              </RNSVGClipPath>
+              <RNSVGClipPath
+                name="clip-logo"
+              >
+                <RNSVGRect
+                  fill={
+                    Array [
+                      0,
+                      4278190080,
+                    ]
+                  }
+                  fillOpacity={1}
+                  fillRule={1}
+                  height={60}
+                  matrix={
+                    Array [
+                      1,
+                      0,
+                      0,
+                      1,
+                      0,
+                      0,
+                    ]
+                  }
+                  opacity={1}
+                  originX={0}
+                  originY={0}
+                  propList={Array []}
+                  rotation={0}
+                  rx={0}
+                  ry={0}
+                  scaleX={1}
+                  scaleY={1}
+                  skewX={0}
+                  skewY={0}
+                  stroke={null}
+                  strokeDasharray={null}
+                  strokeDashoffset={null}
+                  strokeLinecap={0}
+                  strokeLinejoin={0}
+                  strokeMiterlimit={4}
+                  strokeOpacity={1}
+                  strokeWidth={1}
+                  vectorEffect={0}
+                  width={60}
+                  x={0}
+                  y={0}
+                />
+              </RNSVGClipPath>
+            </RNSVGDefs>
+            <RNSVGRect
+              fill={
+                Array [
+                  0,
+                  4294967295,
+                ]
+              }
+              fillOpacity={1}
+              fillRule={1}
+              height={200}
+              matrix={
+                Array [
+                  1,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                ]
+              }
+              opacity={1}
+              originX={0}
+              originY={0}
+              propList={
+                Array [
+                  "fill",
+                ]
+              }
+              rotation={0}
+              scaleX={1}
+              scaleY={1}
+              skewX={0}
+              skewY={0}
+              stroke={null}
+              strokeDasharray={null}
+              strokeDashoffset={null}
+              strokeLinecap={0}
+              strokeLinejoin={0}
+              strokeMiterlimit={4}
+              strokeOpacity={1}
+              strokeWidth={1}
+              vectorEffect={0}
+              width={200}
+              x={0}
+              y={0}
+            />
+            <RNSVGPath
+              d="M0 4 L56 4 M72 4 L128 4 M144 4 L200 4 M0 12 L8 12 M48 12 L56 12 M104 12 L136 12 M144 12 L152 12 M192 12 L200 12 M0 20 L8 20 M16 20 L40 20 M48 20 L56 20 M64 20 L80 20 M88 20 L96 20 M104 20 L112 20 M120 20 L128 20 M144 20 L152 20 M160 20 L184 20 M192 20 L200 20 M0 28 L8 28 M16 28 L40 28 M48 28 L56 28 M64 28 L88 28 M96 28 L104 28 M112 28 L128 28 M144 28 L152 28 M160 28 L184 28 M192 28 L200 28 M0 36 L8 36 M16 36 L40 36 M48 36 L56 36 M64 36 L72 36 M80 36 L104 36 M120 36 L136 36 M144 36 L152 36 M160 36 L184 36 M192 36 L200 36 M0 44 L8 44 M48 44 L56 44 M64 44 L104 44 M144 44 L152 44 M192 44 L200 44 M0 52 L56 52 M64 52 L72 52 M80 52 L88 52 M96 52 L104 52 M112 52 L120 52 M128 52 L136 52 M144 52 L200 52 M64 60 L80 60 M88 60 L96 60 M112 60 L120 60 M128 60 L136 60 M0 68 L8 68 M16 68 L56 68 M72 68 L80 68 M96 68 L104 68 M144 68 L184 68 M0 76 L8 76 M24 76 L32 76 M40 76 L48 76 M56 76 L80 76 M104 76 L128 76 M152 76 L160 76 M40 84 L56 84 M72 84 L96 84 M104 84 L128 84 M160 84 L176 84 M184 84 L200 84 M0 92 L8 92 M16 92 L32 92 M40 92 L48 92 M56 92 L80 92 M88 92 L96 92 M104 92 L112 92 M128 92 L152 92 M192 92 L200 92 M0 100 L8 100 M40 100 L56 100 M72 100 L104 100 M112 100 L120 100 M136 100 L152 100 M160 100 L168 100 M176 100 L200 100 M0 108 L16 108 M64 108 L72 108 M80 108 L88 108 M128 108 L144 108 M152 108 L160 108 M168 108 L176 108 M0 116 L8 116 M16 116 L32 116 M48 116 L56 116 M64 116 L72 116 M80 116 L104 116 M120 116 L160 116 M168 116 L200 116 M0 124 L8 124 M16 124 L32 124 M56 124 L72 124 M88 124 L96 124 M112 124 L128 124 M144 124 L168 124 M184 124 L200 124 M0 132 L8 132 M16 132 L40 132 M48 132 L56 132 M64 132 L80 132 M88 132 L96 132 M128 132 L184 132 M192 132 L200 132 M64 140 L72 140 M80 140 L88 140 M96 140 L136 140 M160 140 L168 140 M0 148 L56 148 M72 148 L88 148 M104 148 L120 148 M128 148 L136 148 M144 148 L152 148 M160 148 L168 148 M184 148 L200 148 M0 156 L8 156 M48 156 L56 156 M64 156 L72 156 M96 156 L112 156 M128 156 L136 156 M160 156 L168 156 M184 156 L192 156 M0 164 L8 164 M16 164 L40 164 M48 164 L56 164 M64 164 L72 164 M96 164 L104 164 M112 164 L168 164 M176 164 L192 164 M0 172 L8 172 M16 172 L40 172 M48 172 L56 172 M64 172 L72 172 M80 172 L88 172 M128 172 L152 172 M160 172 L176 172 M192 172 L200 172 M0 180 L8 180 M16 180 L40 180 M48 180 L56 180 M64 180 L104 180 M128 180 L136 180 M176 180 L184 180 M192 180 L200 180 M0 188 L8 188 M48 188 L56 188 M88 188 L96 188 M112 188 L136 188 M144 188 L168 188 M192 188 L200 188 M0 196 L56 196 M64 196 L96 196 M136 196 L144 196 M176 196 L200 196 "
+              fill={
+                Array [
+                  0,
+                  4278190080,
+                ]
+              }
+              fillOpacity={1}
+              fillRule={1}
+              matrix={
+                Array [
+                  1,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                ]
+              }
+              opacity={1}
+              originX={0}
+              originY={0}
+              propList={
+                Array [
+                  "stroke",
+                  "strokeWidth",
+                ]
+              }
+              rotation={0}
+              scaleX={1}
+              scaleY={1}
+              skewX={0}
+              skewY={0}
+              stroke={
+                Array [
+                  0,
+                  4278190080,
+                ]
+              }
+              strokeDasharray={null}
+              strokeDashoffset={null}
+              strokeLinecap={0}
+              strokeLinejoin={0}
+              strokeMiterlimit={4}
+              strokeOpacity={1}
+              strokeWidth={8}
+              vectorEffect={0}
+              x={0}
+              y={0}
+            />
+            <RNSVGGroup
+              fill={
+                Array [
+                  0,
+                  4278190080,
+                ]
+              }
+              fillOpacity={1}
+              fillRule={1}
+              font={Object {}}
+              matrix={
+                Array [
+                  1,
+                  0,
+                  -0,
+                  1,
+                  68,
+                  68,
+                ]
+              }
+              opacity={1}
+              originX={0}
+              originY={0}
+              propList={Array []}
+              rotation={0}
+              scaleX={1}
+              scaleY={1}
+              skewX={0}
+              skewY={0}
+              stroke={null}
+              strokeDasharray={null}
+              strokeDashoffset={null}
+              strokeLinecap={0}
+              strokeLinejoin={0}
+              strokeMiterlimit={4}
+              strokeOpacity={1}
+              strokeWidth={1}
+              vectorEffect={0}
+              x={68}
+              y={68}
+            >
+              <RNSVGRect
+                clipPath="clip-wrapper"
+                fill={
+                  Array [
+                    0,
+                    0,
+                  ]
+                }
+                fillOpacity={1}
+                fillRule={1}
+                height={64}
+                matrix={
+                  Array [
+                    1,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                  ]
+                }
+                opacity={1}
+                originX={0}
+                originY={0}
+                propList={
+                  Array [
+                    "fill",
+                  ]
+                }
+                rotation={0}
+                scaleX={1}
+                scaleY={1}
+                skewX={0}
+                skewY={0}
+                stroke={null}
+                strokeDasharray={null}
+                strokeDashoffset={null}
+                strokeLinecap={0}
+                strokeLinejoin={0}
+                strokeMiterlimit={4}
+                strokeOpacity={1}
+                strokeWidth={1}
+                vectorEffect={0}
+                width={64}
+                x={0}
+                y={0}
+              />
+              <RNSVGGroup
+                fill={
+                  Array [
+                    0,
+                    4278190080,
+                  ]
+                }
+                fillOpacity={1}
+                fillRule={1}
+                font={Object {}}
+                matrix={
+                  Array [
+                    1,
+                    0,
+                    -0,
+                    1,
+                    2,
+                    2,
+                  ]
+                }
+                opacity={1}
+                originX={0}
+                originY={0}
+                propList={Array []}
+                rotation={0}
+                scaleX={1}
+                scaleY={1}
+                skewX={0}
+                skewY={0}
+                stroke={null}
+                strokeDasharray={null}
+                strokeDashoffset={null}
+                strokeLinecap={0}
+                strokeLinejoin={0}
+                strokeMiterlimit={4}
+                strokeOpacity={1}
+                strokeWidth={1}
+                vectorEffect={0}
+                x={2}
+                y={2}
+              >
+                <RNSVGImage
+                  align="xMidYMid"
+                  clipPath="clip-logo"
+                  fill={
+                    Array [
+                      0,
+                      4278190080,
+                    ]
+                  }
+                  fillOpacity={1}
+                  fillRule={1}
+                  height={60}
+                  matrix={
+                    Array [
+                      1,
+                      0,
+                      0,
+                      1,
+                      0,
+                      0,
+                    ]
+                  }
+                  meetOrSlice={1}
+                  opacity={1}
+                  originX={0}
+                  originY={0}
+                  propList={Array []}
+                  rotation={0}
+                  scaleX={1}
+                  scaleY={1}
+                  skewX={0}
+                  skewY={0}
+                  src={
+                    Object {
+                      "testUri": "../../../src/resources/icons/coins/Btx.png",
+                    }
+                  }
+                  stroke={null}
+                  strokeDasharray={null}
+                  strokeDashoffset={null}
+                  strokeLinecap={0}
+                  strokeLinejoin={0}
+                  strokeMiterlimit={4}
+                  strokeOpacity={1}
+                  strokeWidth={1}
+                  vectorEffect={0}
+                  width={60}
+                  x={0}
+                  y={0}
+                />
+              </RNSVGGroup>
+            </RNSVGGroup>
+          </RNSVGGroup>
+        </RNSVGSvgView>
+      </View>
+      <View
+        style={
+          Object {
+            "opacity": 0,
+            "position": "absolute",
+            "right": -15,
+            "top": -15,
+            "transform": Array [
+              Object {
+                "scale": 0.3,
+              },
+            ],
+          }
+        }
+      >
+        <View>
+          <View
+            accessible={true}
+            clickable={true}
+            isTVSelectable={true}
+            onClick={[Function]}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
+            style={
+              Object {
+                "alignItems": "center",
+                "backgroundColor": "#FF9B34",
+                "borderRadius": 19,
+                "height": 34,
+                "justifyContent": "center",
+                "margin": 7,
+                "shadowColor": "rgba(0,0,0, .4)",
+                "shadowOffset": Object {
+                  "height": 1,
+                  "width": 1,
+                },
+                "shadowOpacity": 1,
+                "shadowRadius": 1,
+                "width": 34,
+              }
+            }
+          >
+            <Text
+              allowFontScaling={false}
+              style={
+                Array [
+                  Object {
+                    "color": "white",
+                    "fontSize": 15,
+                  },
+                  Object {
+                    "backgroundColor": "transparent",
+                  },
+                  Object {
+                    "fontFamily": "Material Icons",
+                    "fontStyle": "normal",
+                    "fontWeight": "normal",
+                  },
+                  Object {},
+                ]
+              }
+              testID="iconIcon"
+            >
+              
+            </Text>
+          </View>
+        </View>
+      </View>
+    </View>
+    <View
+      accessible={true}
+      clickable={true}
+      isTVSelectable={true}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        Object {
+          "alignItems": "center",
+          "flexDirection": "row",
+          "justifyContent": "space-around",
+          "opacity": 1,
+          "width": "90%",
+        }
+      }
+    >
+      <Text
+        style={
+          Object {
+            "color": "#FFFFFF",
+            "fontSize": 14,
+            "padding": 10,
+          }
+        }
+      >
+        address-bitcoin
+      </Text>
+      <View>
+        <View
+          style={
+            Object {
+              "alignItems": "center",
+              "backgroundColor": "transparent",
+              "justifyContent": "center",
+            }
+          }
+          theme={
+            Object {
+              "colors": Object {
+                "disabled": "hsl(208, 8%, 90%)",
+                "divider": "#bcbbc1",
+                "error": "#ff190c",
+                "grey0": "#393e42",
+                "grey1": "#43484d",
+                "grey2": "#5e6977",
+                "grey3": "#86939e",
+                "grey4": "#bdc6cf",
+                "grey5": "#e1e8ee",
+                "greyOutline": "#bbb",
+                "platform": Object {
+                  "android": Object {
+                    "error": "#f44336",
+                    "primary": "#2196f3",
+                    "secondary": "#9C27B0",
+                    "success": "#4caf50",
+                    "warning": "#ffeb3b",
+                  },
+                  "ios": Object {
+                    "error": "#ff3b30",
+                    "primary": "#007aff",
+                    "secondary": "#5856d6",
+                    "success": "#4cd964",
+                    "warning": "#ffcc00",
+                  },
+                },
+                "primary": "#2089dc",
+                "searchBg": "#303337",
+                "secondary": "#8F0CE8",
+                "success": "#52c41a",
+                "warning": "#faad14",
+              },
+            }
+          }
+          underlayColor="white"
+        >
+          <Text
+            allowFontScaling={false}
+            style={
+              Array [
+                Object {
+                  "color": "#FF9B34",
+                  "fontSize": 20,
+                },
+                Object {
+                  "backgroundColor": "transparent",
+                },
+                Object {
+                  "fontFamily": "Feather",
+                  "fontStyle": "normal",
+                  "fontWeight": "normal",
+                },
+                Object {},
+              ]
+            }
+            testID="iconIcon"
+          >
+            
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+  <View />
+</View>
+`;
+
+exports[`Testing Deposit module mounts and renders without address 1`] = `
+<View>
+  <View />
+  <View />
+  <View />
+</View>
+`;
+
+exports[`Testing Deposit module shows error 1`] = `
+<View>
+  <View />
+  <View />
+  <View
+    style={
+      Array [
+        Object {
+          "alignItems": "center",
+          "backgroundColor": "rgba(255,0,0,0.8)",
+          "bottom": 0,
+          "elevation": 8,
+          "flexDirection": "row",
+          "height": 50,
+          "justifyContent": "center",
+          "left": 0,
+          "paddingHorizontal": 10,
+          "position": "absolute",
+          "width": "100%",
+          "zIndex": 100,
+        },
+        undefined,
+      ]
+    }
+  >
+    <View>
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "backgroundColor": "transparent",
+            "justifyContent": "center",
+          }
+        }
+        theme={
+          Object {
+            "colors": Object {
+              "disabled": "hsl(208, 8%, 90%)",
+              "divider": "#bcbbc1",
+              "error": "#ff190c",
+              "grey0": "#393e42",
+              "grey1": "#43484d",
+              "grey2": "#5e6977",
+              "grey3": "#86939e",
+              "grey4": "#bdc6cf",
+              "grey5": "#e1e8ee",
+              "greyOutline": "#bbb",
+              "platform": Object {
+                "android": Object {
+                  "error": "#f44336",
+                  "primary": "#2196f3",
+                  "secondary": "#9C27B0",
+                  "success": "#4caf50",
+                  "warning": "#ffeb3b",
+                },
+                "ios": Object {
+                  "error": "#ff3b30",
+                  "primary": "#007aff",
+                  "secondary": "#5856d6",
+                  "success": "#4cd964",
+                  "warning": "#ffcc00",
+                },
+              },
+              "primary": "#2089dc",
+              "searchBg": "#303337",
+              "secondary": "#8F0CE8",
+              "success": "#52c41a",
+              "warning": "#faad14",
+            },
+          }
+        }
+        underlayColor="white"
+      >
+        <Text
+          allowFontScaling={false}
+          style={
+            Array [
+              Object {
+                "color": "#FFFFFF",
+                "fontSize": 20,
+              },
+              Object {
+                "backgroundColor": "transparent",
+              },
+              Object {
+                "fontFamily": "Material Icons",
+                "fontStyle": "normal",
+                "fontWeight": "normal",
+              },
+              Object {},
+            ]
+          }
+          testID="iconIcon"
+        >
+          
+        </Text>
+      </View>
+    </View>
+    <Text>
+      This is an error
+    </Text>
+  </View>
+</View>
+`;

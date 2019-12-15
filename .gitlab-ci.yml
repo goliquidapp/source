@@ -1,0 +1,34 @@
+.job_template: &job_deploy
+  stage: deploy
+  before_script:
+    - npm install
+  tags:
+    - react-native
+  after_script:
+    - cp $OUTPUT_PATH.$FILE_TYPE $CI_PROJECT_NAME-$CI_COMMIT_REF_NAME.$FILE_TYPE
+  artifacts:
+    name: "$CI_PROJECT_NAME-$PLATFORM-$CI_COMMIT_REF_NAME"
+    paths:
+    - $CI_PROJECT_NAME-$CI_COMMIT_REF_NAME.$FILE_TYPE
+    expire_in: 7 days
+  when: manual
+
+deploy:android:prod:
+  variables:
+    PLATFORM: android
+    FILE_TYPE: apk
+    OUTPUT_PATH: android/app/build/outputs/apk/release/app-release
+  <<: *job_deploy
+  script:
+    - chmod 755 ./android/gradlew
+    - cd android && ./gradlew assembleRelease -PMYAPP_UPLOAD_STORE_PASSWORD=$KEYSTORE_PASSWORD -PMYAPP_UPLOAD_STORE_PASSWORD=$KEYSTORE_PASSWORD
+  
+deploy:ios:prod:
+  variables:
+    PLATFORM: ios
+    FILE_TYPE: ipa
+    OUTPUT_PATH: ios/builds/bitmex_trading
+  <<: *job_deploy
+  script:
+    - chmod u+x ./build_ios.command
+    - sh build_ios.command

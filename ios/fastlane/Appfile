@@ -1,0 +1,8 @@
+app_identifier("com.cneph.equilibrium") # The bundle identifier of your app
+apple_id("ammar.rajab1@gmail.com") # Your Apple email address
+
+itc_team_id("119330324") # App Store Connect Team ID
+team_id("UK3S3D6VYH") # Developer Portal Team ID
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile
