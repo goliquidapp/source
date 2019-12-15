@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="188px" height="188px" viewBox="0 0 188 188" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 59.1 (86144) - https://sketch.com -->
+    <title>Group</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <filter x="-40.2%" y="-38.7%" width="180.5%" height="180.5%" filterUnits="objectBoundingBox" id="filter-1">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="5.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-2">
+            <stop stop-color="#26B8FF" offset="0%"></stop>
+            <stop stop-color="#8411FF" offset="100%"></stop>
+        </linearGradient>
+        <path d="M56.1187482,127.038312 C60.3201182,127.782499 89.9123579,132.51125 111.415241,111.221114 C133.708198,89.1486206 127.378585,58.8400862 126.524671,55.0825509 C121.236276,31.8091047 103.659626,19.3389642 96.0533587,13.9423676 C87.8424295,8.11706267 75.9030406,-0.396570597 59.1656176,0.0143341627 C38.5483514,0.520665677 25.3778248,13.5284718 19.3774465,19.3771349 C14.3707327,24.2571452 2.63086197,36.0367948 0.372176584,54.7472754 C-1.58214179,70.936638 4.64742071,83.3193277 7.73660779,89.2578629 C10.3123119,94.2093721 24.4043739,121.42138 56.1187482,127.038312 Z" id="path-3"></path>
+        <filter x="-29.7%" y="-28.1%" width="159.4%" height="159.4%" filterUnits="objectBoundingBox" id="filter-4">
+            <feMorphology radius="2.5" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
+            <feOffset dx="0" dy="2" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="11.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Welcome-Screen" transform="translate(-94.000000, -51.000000)">
+            <g id="Group" filter="url(#filter-1)" transform="translate(124.000000, 77.000000)">
+                <g id="Stroke-1">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-4)" xlink:href="#path-3"></use>
+                    <use stroke="#FFFFFF" stroke-width="5" fill="url(#linearGradient-2)" fill-rule="evenodd" xlink:href="#path-3"></use>
+                </g>
+                <path d="M83.3565806,80.9663852 C79.5630655,88.0138092 82.1467539,98.5346298 87.9024571,100.565899 C93.1804961,102.428614 99.6776993,96.6418984 102.539718,91.632995 C105.462835,86.5170096 107.035488,77.9393884 102.881308,74.3640826 C98.211275,70.3449245 87.3496209,73.5477479 83.3565806,80.9663852 Z" id="Stroke-3" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>

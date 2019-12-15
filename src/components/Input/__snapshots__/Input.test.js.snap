@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Testing Input component renders correctly 1`] = `
+<View
+  style={
+    Array [
+      Object {
+        "marginVertical": 8,
+        "width": "90%",
+      },
+      undefined,
+    ]
+  }
+>
+  <Text
+    style={
+      Object {
+        "color": "#A1ADB5",
+        "fontSize": 12,
+        "opacity": 0,
+      }
+    }
+  />
+  <TextInput
+    allowFontScaling={true}
+    blurOnSubmit={true}
+    onSubmitEditing={[Function]}
+    rejectResponderTermination={true}
+    returnKeyType="done"
+    style={
+      Array [
+        Object {
+          "borderBottomColor": "#FFFFFF",
+          "borderBottomWidth": 1,
+          "fontFamily": "System",
+          "fontSize": 14,
+          "paddingHorizontal": 15,
+          "paddingRight": 40,
+          "paddingVertical": 15,
+          "width": "100%",
+        },
+        undefined,
+        Object {
+          "borderBottomWidth": 1,
+        },
+        Object {},
+      ]
+    }
+    undeline={true}
+    underlineColorAndroid="transparent"
+    value=""
+  />
+</View>
+`;

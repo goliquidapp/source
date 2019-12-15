@@ -1,0 +1,2 @@
+cd ios
+fastlane beta
