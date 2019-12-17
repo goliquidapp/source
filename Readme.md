@@ -35,6 +35,11 @@
   </a>
 </p>
 
+<p>
+    <a href="https://twitter.com/intent/follow?screen_name=GoLiquidApp">
+        <img src="https://img.shields.io/twitter/follow/GoLiquidApp.svg?label=Follow%20@Liquid" alt="Follow @Liquid" />
+    </a>
+</p>
 
 ### Summary
 <p align="center">
