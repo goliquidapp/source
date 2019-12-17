@@ -98,9 +98,7 @@ src
 
 ### 📄 License
 
-This application is not open source and is licensed under **Fair Source 1 (v0.9)**
-
-Please read the [License](LICENSE)
+Liquid is **Fair Source 1 (v0.9)** licensed as found in [LICENSE](LICENSE) file.
 
 ### 📄 Copyright
 © All rights reserved to [CNepho](https://cnepho.com/) SARL
