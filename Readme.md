@@ -87,7 +87,7 @@ src
 - When creating a production release make sure to set **debug** flag to `false` in `src/config.js`
 
 - IOS release:  
-  - `cd ios && fastlane beta ` this will create a new release on TestFlight
+  - Open `ios/bitmex_trading.xcworkspace` in xCode and hit run or build.
 
 - Android release:  
   - `cd android && ./gradlew assembleRelease`
