@@ -1,5 +1,6 @@
 import { ORDER_BOOK_GET_STARTED, ORDER_BOOK_GET_FINISHED, ORDER_BOOK_GET_ERROR,
-		 ORDER_BOOK_WS_STARTED, ORDER_BOOK_WS_PARTIAL, ORDER_BOOK_WS_UPDATE, ORDER_BOOK_WS_DELETE, ORDER_BOOK_WS_INSERT} from './OrderBook.types.js';
+		 ORDER_BOOK_WS_STARTED, ORDER_BOOK_WS_PARTIAL, ORDER_BOOK_WS_UPDATE,
+		 ORDER_BOOK_WS_DELETE, ORDER_BOOK_WS_INSERT, ORDER_BOOK_WS_FLUSH} from './OrderBook.types.js';
 
 import {updateOrderBook, deleteOrderBook, insertOrderBook} from './OrderBook.helpers.js';
 
@@ -41,7 +42,9 @@ export default (state=INIT_STATE,action)=>{
 			var realtimeData=[...state.realtimeData];
 			insertOrderBook(realtimeData,action.payload)
 			return {...state,loading:false, realtimeData: realtimeData.sort((a,b)=>b.price-a.price)}
-			
+		
+		case ORDER_BOOK_WS_FLUSH:
+			return {...state, realtimeData:[], data:[]}
 		default:
 			return state
 	}

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {ScrollView, View, Text, RefreshControl} from 'react-native';
+import {ScrollView, View, Text, RefreshControl, AppState} from 'react-native';
 import { Icon } from 'react-native-elements';
 
 import { connect } from 'react-redux';
@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import Colors from '../../resources/Colors.js';
 import Theme from '../../resources/Theme.js';
 
-import {subscribe, getOrderBook, unsubscribe} from './OrderBook.actions.js';
+import {subscribe, getOrderBook, unsubscribe, flush} from './OrderBook.actions.js';
 
 import OrderBookRow from '../../components/OrderBookRow/OrderBookRow.component.js';
 import ErrorPopup from '../../components/ErrorPopup/ErrorPopup.component.js';
@@ -15,17 +15,31 @@ import ErrorPopup from '../../components/ErrorPopup/ErrorPopup.component.js';
 class OrderBook extends Component{
 	constructor(props){
 		super(props);
-		this.maxTotal
+		this.maxTotal;
+		this.state={appState: AppState.currentState}
 	}
 	componentDidMount(){
 		this.props.subscribe();
 		this.props.getOrderBook();
+		AppState.addEventListener('change', this._handleAppStateChange);
 	}
 	componentDidUpdate(prevProps){
 		if (prevProps.settings.currency.symbolFull!==this.props.settings.currency.symbolFull){
 			this.props.unsubscribe(prevProps.settings.currency);
 			this.props.getOrderBook();
 			this.props.subscribe();
+		}
+	}
+	componentWillUnmount() {
+		AppState.removeEventListener('change', this._handleAppStateChange);
+	}
+	_handleAppStateChange = (nextAppState) => {
+		if (nextAppState.match(/inactive|background/)){
+			this.props.flush();
+		}
+		if (!nextAppState.match(/inactive|background/)){
+			this.props.subscribe();
+			this.props.getOrderBook();
 		}
 	}
 	calcTotal=(side,id)=>{
@@ -250,4 +264,4 @@ const mapStateToProps=(state)=>{
 		settings:state.settings
 	}
 }
-export default connect(mapStateToProps,{subscribe, getOrderBook, unsubscribe})(OrderBook);
+export default connect(mapStateToProps,{subscribe, getOrderBook, unsubscribe, flush})(OrderBook);
