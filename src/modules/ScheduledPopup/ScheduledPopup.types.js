@@ -1,0 +1,3 @@
+export const CLEAR_SCHEDULE	=	'CLEAR_SCHEDULE'
+export const SET_SCHEDULE	=	'SET_SCHEDULE'
+export const SET_COMPONENT	=	'SET_COMPONENT'

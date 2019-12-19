@@ -28,3 +28,16 @@ export const open2FA=(type=null)=>{
 				})
 				.catch((err) => console.error('An error occurred', err));
 }
+
+export const playStore=(packageName=null)=>{
+	var url=`market://details?id=${packageName}`
+	Linking.canOpenURL(url)
+				.then((supported) => {
+					if (!supported) {
+				  		console.log("Can't handle url: " + url);
+					} else {
+				  		return Linking.openURL(url);
+					}
+				})
+				.catch((err) => console.error('An error occurred', err));
+}

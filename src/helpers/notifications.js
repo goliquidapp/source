@@ -5,7 +5,8 @@ import {Notification} from "react-native-in-app-message";
 import PushNotification from 'react-native-push-notification';
 
 import {NOTIFICATION_SHOW} from '../modules/GlobalNotification/GlobalNotification.types.js';
-import {ADD_NOTIFICATION} from '../modules/Notifications/Notifications.types.js'
+import {ADD_NOTIFICATION} from '../modules/Notifications/Notifications.types.js';
+import {CLEAR_SCHEDULE, SET_SCHEDULE, SET_COMPONENT} from '../modules/ScheduledPopup/ScheduledPopup.types.js'
 
 import store from '../redux/store.js';
 
@@ -57,3 +58,21 @@ export const notify=async ({title, body, type}, bg=true)=>{
 		await AsyncStorage.setItem('notifications',JSON.stringify({notifications}));
 	}
 }
+
+export const clearPopupSchedule=()=>{
+	store.dispatch({
+		type: CLEAR_SCHEDULE
+	})
+}
+
+export const schedulePopup=(schedule, children, onClose=clearPopupSchedule)=>{
+	store.dispatch({
+		type: SET_SCHEDULE,
+		payload: {
+			schedule,
+			children,
+			onClose
+		}
+	});
+}
+

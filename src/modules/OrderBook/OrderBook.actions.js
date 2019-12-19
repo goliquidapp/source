@@ -1,5 +1,6 @@
 import { ORDER_BOOK_GET_STARTED, ORDER_BOOK_GET_FINISHED, ORDER_BOOK_GET_ERROR,
-		 ORDER_BOOK_WS_STARTED, ORDER_BOOK_WS_PARTIAL, ORDER_BOOK_WS_UPDATE, ORDER_BOOK_WS_DELETE, ORDER_BOOK_WS_INSERT} from './OrderBook.types.js';
+		 ORDER_BOOK_WS_STARTED, ORDER_BOOK_WS_PARTIAL, ORDER_BOOK_WS_UPDATE, 
+		 ORDER_BOOK_WS_DELETE, ORDER_BOOK_WS_INSERT, ORDER_BOOK_WS_FLUSH} from './OrderBook.types.js';
 
 import API from '../../api/API.js';
 import {auth} from '../../helpers/bitmex.helpers.js';
@@ -64,4 +65,9 @@ export const handleMessage= (e) => dispatch =>{
 	else if (action==='insert'){
 		dispatch({type:ORDER_BOOK_WS_INSERT, payload:data})
 	}
+}
+
+
+export const flush=()=>{
+	return {type:ORDER_BOOK_WS_FLUSH}
 }

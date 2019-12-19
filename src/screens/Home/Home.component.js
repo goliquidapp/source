@@ -3,18 +3,23 @@ import {View, Alert, ScrollView} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 import Theme from '../../resources/Theme.js';
-import {start, orders, deadman, notificationsPermissions, updateSubscriptions, loadNotifications} from '../../helpers/onstart.js';
+import {
+	start, orders, deadman,
+	notificationsPermissions, 
+	updateSubscriptions, 
+	loadNotifications,
+	rateApp
+} from '../../helpers/onstart.js';
 
 import OrderBook from '../../modules/OrderBook/OrderBook.component.js';
 import Summary from '../../modules/Summary/Summary.component.js';
 import Balance from '../../modules/Balance/Balance.component.js';
 import Position from '../../modules/Position/Position.component.js';
-
-import FloatingButton from '../../components/FloatingButton/FloatingButton.component.js';
+import ScheduledPopup from '../../modules/ScheduledPopup/ScheduledPopup.component.js';
 
 export default class Home extends Component{
     componentDidMount(){
-        start([orders, deadman, notificationsPermissions, updateSubscriptions, loadNotifications])
+        start([orders, deadman, notificationsPermissions, updateSubscriptions, loadNotifications, rateApp]);
     }
 	newOrder=()=>{
 		this.props.navigation.navigate('PlaceOrder')
@@ -28,6 +33,7 @@ export default class Home extends Component{
 						<Position/> 
 						<OrderBook/>
 				</ScrollView>
+				<ScheduledPopup/>
             </LinearGradient>
 			)
 	}

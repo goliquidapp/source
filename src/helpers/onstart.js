@@ -1,3 +1,4 @@
+import React from 'react';
 import store from '../redux/store.js';
 import myOrders from '../modules/MyOrders/MyOrders.actions.js';
 import {setDeadMan} from '../modules/Settings/Settings.actions.js';
@@ -8,6 +9,11 @@ import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import {LOAD_NOTIFICATIONS} from '../modules/Notifications/Notifications.types.js'
 import AsyncStorage from '@react-native-community/async-storage';
 
+import RateApp from '../components/RateApp/RateApp.component.js';
+
+import moment from 'moment';
+import config from '../config.js';
+import {schedulePopup} from './notifications.js';
 
 export const start=(tasks)=>{
 	tasks.map((task)=>{
@@ -86,5 +92,24 @@ export const loadNotifications=async ()=>{
       type:LOAD_NOTIFICATIONS,
       payload:notifications
     });
+  }
+}
+
+export const rateApp=async ()=>{
+  const rateInfo = await AsyncStorage.getItem('appRated');
+
+  if (!rateInfo){
+    const rateDate=moment(moment()).add(config.rateSchedule.duration,config.rateSchedule.unit);
+    schedulePopup(rateDate, <RateApp/>);
+
+    await AsyncStorage.setItem('appRated', JSON.stringify({rated:false, rateDate}));
+  }else if (rateInfo){
+    const rated=JSON.parse(rateInfo).rated;
+    if (!rated){
+      const rateDate=moment(moment()).add(config.rateReminder.duration,config.rateReminder.unit);
+      schedulePopup(rateDate, <RateApp/>);
+
+      await AsyncStorage.setItem('appRated', JSON.stringify({rated:false, rateDate}));
+    }
   }
 }
