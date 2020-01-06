@@ -94,7 +94,8 @@ src
 
 ### 🎉 Building notes
 
-- When creating a production release make sure to set **debug** flag to `false` in `src/config.js`
+- When creating a production release make sure to set **debug** flag to `false` in `src/config.js`  
+- Follow RN docs in how to sign application for release [here](https://facebook.github.io/react-native/docs/signed-apk-android)
 
 - IOS release:  
   - Open `ios/bitmex_trading.xcworkspace` in xCode and hit run or build.
@@ -103,8 +104,8 @@ src
   - `cd android && ./gradlew assembleRelease`
 
 - Binaries:
-  - [Download Universal APK](app-universal-release.apk)
-  - MD5 93AF3A0FC150A8244836F85BE5E42802
+  - [Download Universal APK](https://drive.google.com/open?id=1Lwc5F0gsPDDcRc6YqyY19zqlZB3LCDYT)
+  - Validate with MD5 `93AF3A0FC150A8244836F85BE5E42802`
 
 ### 📄 License
 
