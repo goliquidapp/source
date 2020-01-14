@@ -14,7 +14,7 @@ class Tag extends Component{
 		var bgColor=color?[color,color]:(colors.length>1?colors:[colors[0],colors[0]]);
 
 		return (
-			<TouchableOpacity activeOpacity={disabled?1:0.2} style={[styles.container,containerStyle]} onPress={disabled?undefined:onPress}>
+			<TouchableOpacity ref={this.props.ref} activeOpacity={disabled?1:0.2} style={[styles.container,containerStyle]} onPress={disabled?undefined:onPress}>
 				{
 					(align==='left')&&
 					<LinearGradient colors={bgColor} style={[styles.column,styles.tag]} start={{x: 0, y: 0}} end={{x: 1, y: 1}}>

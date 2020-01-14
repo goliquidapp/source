@@ -1,10 +1,14 @@
 import React, {Component} from 'react';
-import {LayoutAnimation, Dimensions, KeyboardAvoidingView, View, Alert, Picker, Text, TouchableOpacity, ActivityIndicator, Keyboard, Platform} from 'react-native';
+import {LayoutAnimation, Dimensions, KeyboardAvoidingView, 
+		View, Alert, Picker, Text, TouchableOpacity, 
+		ActivityIndicator, Keyboard, Platform} from 'react-native';
+
 import { Icon } from 'react-native-elements';
 import {AllHtmlEntities} from 'html-entities';
 import { connect } from 'react-redux';
 import Slider from '@react-native-community/slider';
 import * as Animatable from 'react-native-animatable';
+import {KeyboardAccessoryView} from 'react-native-keyboard-input';
 
 import Colors from '../../resources/Colors.js';
 import Material from '../../resources/Material.js';
@@ -15,6 +19,7 @@ import Tag from '../../components/Tag/Tag.component.js';
 import ErrorPopup from '../../components/ErrorPopup/ErrorPopup.component.js';
 import IconButton from '../../components/IconButton/IconButton.component.js';
 import Overlay from '../../components/Overlay/Overlay.component.js';
+import CustomKeyboard from '../../components/CustomKeyboard/CustomKeyboard.component.js'
 
 import Summary from '../Summary/Summary.component.js';
 
@@ -26,6 +31,8 @@ import ordTypes from './NewOrder.consts.js';
 
 import { orderBook} from '../../helpers/finance.js';
 import NavigationService from '../../helpers/navigate.js';
+
+import { hook } from 'cavy';
 
 const HEIGHT=Dimensions.get('window').height
 const WIDTH=Dimensions.get('window').width
@@ -46,7 +53,8 @@ class NewOrder extends Component{
 			pegOffsetValue:0.0,
 			execInst:'',
 			disabledButtons:{buy:false, sell:false},
-			keyboardOff:true
+			keyboardOff:true,
+            keyboard:''
 		};
 		this.moreEqual=new AllHtmlEntities().decode('&#8805');
 		this.lessEqual=new AllHtmlEntities().decode('&#8804');
@@ -107,6 +115,18 @@ class NewOrder extends Component{
 		this.setNextTransition();
 		this.setState({keyboardOff:true})
 	}
+	onKeyboardItemSelected=(keyboardId, params)=>{
+        const {value}=params;
+        var disabledButtons={buy:false, sell:false};
+        
+        if (!value) disabledButtons={buy:true, sell:true};
+        else if (value<0) disabledButtons.buy=true;
+        else if (value>0) disabledButtons.sell=true;
+        else if (!value) disabledButtons={buy:true, sell:true};
+        else disabledButtons={buy:true, sell:true};
+        
+        this.setState({pegOffsetValue:value, disabledButtons})
+    }
 	shapeForm=()=>{
 		const {orderQty, price, clOrdID, ordType, stopPx, pegOffsetValue, timeInForce}=this.state;
 		if (!orderQty) 	 return null;
@@ -233,7 +253,8 @@ class NewOrder extends Component{
 								placeholderTextColor={Theme['dark'].secondaryText}
 								keyboardType={"number-pad"}
 								error={!orderQty.toString()}
-								containerStyle={styles.input}/>
+								containerStyle={styles.input}
+								ref={this.props.generateTestHook('NewOrder.QtyInput')}/>
 
 						<Input 	readOnly={placingOrder}
 								onChangeText={(value)=>this.setState({price:value})}
@@ -243,7 +264,8 @@ class NewOrder extends Component{
 								placeholderTextColor={Theme['dark'].secondaryText}
 								keyboardType={"decimal-pad"}
 								error={!placingOrder.toString()}
-								containerStyle={styles.input}/>
+								containerStyle={styles.input}
+								ref={this.props.generateTestHook('NewOrder.PriceInput')}/>
 					</View>
 					<Slider
 					    style={{width: 200, height: 50}}
@@ -409,27 +431,30 @@ class NewOrder extends Component{
 								keyboardType={"number-pad"}
 								error={!orderQty.toString()}
 								containerStyle={styles.input}/>
-
-						<Input readOnly={placingOrder}
-								onChangeText={(value)=>{
-									var disabledButtons={buy:false, sell:false};
                 
-									if (!value) disabledButtons={buy:true, sell:true};
-									else if (value<0) disabledButtons.buy=true;
-									else if (value>0) disabledButtons.sell=true;
-									else if (!value) disabledButtons={buy:true, sell:true};
-									else disabledButtons={buy:true, sell:true};
-
-									this.setState({pegOffsetValue:value, disabledButtons})
-								}}
-								value={pegOffsetValue.toString()}
-								placeholder={"Trail Value"}
-								textStyle={styles.textStyle}
-								placeholderTextColor={Theme['dark'].secondaryText}
+                        <Input readOnly={placingOrder}
+                                onChangeText={(value)=>{
+                                    var disabledButtons={buy:false, sell:false};
+                
+                                    if (!value) disabledButtons={buy:true, sell:true};
+                                    else if (value<0) disabledButtons.buy=true;
+                                    else if (value>0) disabledButtons.sell=true;
+                                    else if (!value) disabledButtons={buy:true, sell:true};
+                                    else disabledButtons={buy:true, sell:true};
+                
+                                    this.setState({pegOffsetValue:value, disabledButtons})
+                                }}
+                                value={pegOffsetValue.toString()}
+                                placeholder={"Trail Value"}
+                                textStyle={styles.textStyle}
+                                placeholderTextColor={Theme['dark'].secondaryText}
                                 keyboardType={"number-pad"}
-                                withMinus={Platform.OS==='ios'?true:false}
-								error={!pegOffsetValue.toString()}
-								containerStyle={styles.input}/>
+                                withMinus={Platform.OS==='ios'?false:false}
+                                error={!pegOffsetValue.toString()}
+                                containerStyle={styles.input}
+                                ref={(ref) => this.textInputRef = ref}
+                                onFocus={()=>this.setState({keyboard:'CustomKeyboard'})}
+                                onClickOutside={()=>this.setState({keyboard:''})}/>
 					</View>
 				</View>
 			)
@@ -597,7 +622,7 @@ class NewOrder extends Component{
 		}
 
 		return (
-			<KeyboardAvoidingView style={styles.container} behavior="padding">
+			<KeyboardAvoidingView style={styles.container} behavior="padding" ref={this.props.generateTestHook('NewOrder.ContainerView')}>
 				<View style={styles.tagsContainer}>
 					<Summary value={(ordType==='Market')?undefined:price}
 							 subtitleBuy1={`${orderQty} @ ${(ordType==='StopLimit' || ordType==='TakeProfitLimit')?price:(ordType==='TakeProfitMarket'?'Market':'')}`}
@@ -635,7 +660,16 @@ class NewOrder extends Component{
 				{this.renderForm()}
 				{this.renderOverlay()}
 				{this.renderError()}
-			</KeyboardAvoidingView>
+				{
+					(Platform.OS === 'ios')&&
+	                <KeyboardAccessoryView
+	                    kbInputRef={this.textInputRef}
+	                    kbComponent={this.state.keyboard}
+	                    onItemSelected={this.onKeyboardItemSelected}
+	                    onKeyboardResigned={()=>this.setState({keyboard:''})}
+	                    revealKeyboardInteractive/>
+                }
+				</KeyboardAvoidingView>
 		)
 	}
 }
@@ -748,4 +782,4 @@ const mapStateToProps=(state)=>{
 		settings:state.settings
 	}
 }
-export default connect(mapStateToProps,{getCurrentPrice, placeOrder, getMyOrders, getPosition})(NewOrder);
+export default connect(mapStateToProps,{getCurrentPrice, placeOrder, getMyOrders, getPosition})(hook(NewOrder));

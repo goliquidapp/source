@@ -1,4 +1,10 @@
+import {Platform} from 'react-native';
+
 const debug=false;
+
+const startDate=(new Date('2019-12-18T17:50:00.000Z')).getTime();
+const now=(new Date()).getTime();
+const diff=(startDate-now)
 
 export default {
 	ID:"",
@@ -14,5 +20,11 @@ export default {
 	retryTimeout:15000,
 	WSReconnectTimeout:5000,
     testFlight:true,
-    liteApp:false
+    liteApp:false,
+    rateSchedule:{duration:3, unit:'minutes'},
+    rateReminder:{duration:2, unit:'minutes'},
+    packageName:Platform.OS==='android'?'com.bitmex_trading':'1482273711',
+    wavesSpeedParam:500000,
+    BITCOIN_ADDR:"1B3BwuWSdfLoDY8kKfQV5bxLneUMjrhjDX",
+    ETH_ADDR:"0xd600a64a405BFaD367cc9B55B97A5568Fb03f757"
 }

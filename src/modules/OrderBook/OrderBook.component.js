@@ -7,10 +7,13 @@ import { connect } from 'react-redux';
 import Colors from '../../resources/Colors.js';
 import Theme from '../../resources/Theme.js';
 
-import {subscribe, getOrderBook, unsubscribe, flush} from './OrderBook.actions.js';
+import {subscribe, getOrderBook, unsubscribe, flush, resetUpdateFrequency} from './OrderBook.actions.js';
 
 import OrderBookRow from '../../components/OrderBookRow/OrderBookRow.component.js';
 import ErrorPopup from '../../components/ErrorPopup/ErrorPopup.component.js';
+
+
+import config from '../../config.js';
 
 class OrderBook extends Component{
 	constructor(props){
@@ -22,6 +25,10 @@ class OrderBook extends Component{
 		this.props.subscribe();
 		this.props.getOrderBook();
 		AppState.addEventListener('change', this._handleAppStateChange);
+
+		const {freq}=this.props.orderBook;
+		const speed=(freq===0)?5000:(500000/freq);
+		this.frequencyInterval=setTimeout(this.updateFreq,speed);
 	}
 	componentDidUpdate(prevProps){
 		if (prevProps.settings.currency.symbolFull!==this.props.settings.currency.symbolFull){
@@ -32,6 +39,7 @@ class OrderBook extends Component{
 	}
 	componentWillUnmount() {
 		AppState.removeEventListener('change', this._handleAppStateChange);
+		clearTimeout(this.frequencyInterval);
 	}
 	_handleAppStateChange = (nextAppState) => {
 		if (nextAppState.match(/inactive|background/)){
@@ -41,6 +49,12 @@ class OrderBook extends Component{
 			this.props.subscribe();
 			this.props.getOrderBook();
 		}
+	}
+	updateFreq=()=>{
+		const {freq}=this.props.orderBook;
+		const speed=(freq===0)?5000:(config.wavesSpeedParam/freq);
+		this.props.resetUpdateFrequency();
+		this.frequencyInterval=setTimeout(this.updateFreq,5000);
 	}
 	calcTotal=(side,id)=>{
 		const {realtimeData}=this.props.orderBook;
@@ -264,4 +278,4 @@ const mapStateToProps=(state)=>{
 		settings:state.settings
 	}
 }
-export default connect(mapStateToProps,{subscribe, getOrderBook, unsubscribe, flush})(OrderBook);
+export default connect(mapStateToProps,{subscribe, getOrderBook, unsubscribe, flush, resetUpdateFrequency})(OrderBook);

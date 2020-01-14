@@ -9,6 +9,7 @@ import config from '../config.js';
 
 import headers from './headers.js'
 import tabs from './tabs.js';
+import animation from './animation.js';
 
 import Home from '../screens/Home/Home.component.js';
 import PlaceOrder from '../screens/PlaceOrder/PlaceOrder.component.js';
@@ -33,18 +34,18 @@ import OrderBook from '../screens/OrderBook/OrderBook.component.js';
 //---------------------------------------------------------
 
 const OrderTabsNavigator=createMaterialTopTabNavigator({
-	NewOrders: 		{ screen: (props)=><Orders {...props} type={"Active"} filter={[{"ordStatus":"New", ordType:"Limit"}]}/>, navigationOptions: tabs.NewOrders },
-	StopOrders: 	{ screen: (props)=><Orders {...props} type={"Stop"}   filter={[{"ordType":"Stop", "ordStatus":"New"},{"ordType":"StopLimit", "ordStatus":"New"},{"ordType":"LimitIfTouched", "ordStatus":"New"}, {"ordType":"MarketIfTouched", "ordStatus":"New"}]}/>, navigationOptions: tabs.StopOrders },
+	NewOrders: 		  { screen: (props)=><Orders {...props} type={"Active"} filter={[{"ordStatus":"New", ordType:"Limit"}]}/>, navigationOptions: tabs.NewOrders },
+	StopOrders: 	  { screen: (props)=><Orders {...props} type={"Stop"}   filter={[{"ordType":"Stop", "ordStatus":"New"},{"ordType":"StopLimit", "ordStatus":"New"},{"ordType":"LimitIfTouched", "ordStatus":"New"}, {"ordType":"MarketIfTouched", "ordStatus":"New"}]}/>, navigationOptions: tabs.StopOrders },
 	FilledOrders: 	{ screen: (props)=><Orders {...props} type={"Filled"} filter={[{"ordStatus":"Filled"}]}/>, navigationOptions: tabs.FilledOrders },
 	CancelledOrders:{ screen: (props)=><Orders {...props} type={"Cancel"} filter={[{"ordStatus":"Canceled"}]}/>, navigationOptions: tabs.CanceledOrders },
-	AllOrders:		{ screen: (props)=><Orders {...props} type={"All"} />, navigationOptions: tabs.AllOrders }
+	AllOrders:		  { screen: (props)=><Orders {...props} type={"All"} />, navigationOptions: tabs.AllOrders }
 }, tabs.Top)
 
 //---------------------------------------------------------
 
 const CalculatorTabsNavigator=createMaterialTopTabNavigator({
-	ProfitLoss: 		{ screen: ProfitLoss, navigationOptions: tabs.ProfitLoss },
-	TargetPrice: 		{ screen: TargetPrice, navigationOptions: tabs.TargetPrice },
+	ProfitLoss: 		    { screen: ProfitLoss, navigationOptions: tabs.ProfitLoss },
+	TargetPrice: 		    { screen: TargetPrice, navigationOptions: tabs.TargetPrice },
 	LiquidationPrice: 	{ screen: LiquidationPrice, navigationOptions: tabs.LiquidationPrice }
 }, tabs.Top)
 
@@ -65,29 +66,23 @@ class CustomNavigator extends React.Component {
 }
 
 const OrdersNavigator=createStackNavigator({
-	Orders: 	{ screen: CustomNavigator, navigationOptions: headers.Orders }
+	Orders: 	                          { screen: CustomNavigator, navigationOptions: headers.Orders }
 })
 
 //---------------------------------------------------------
 
 const HomeNavigator=createStackNavigator({
-	Home: 								{ screen: Home, navigationOptions: headers.Home },
-	Orders: 							{ screen: Orders, navigationOptions: headers.Orders },
-	UserLogs:							{ screen: UserLogs, navigationOptions: headers.UserLogs },
-	Config:								{ screen: Config, navigationOptions: headers.Config},
-	BitmexConfig:						{ screen: BitmexConfig, navigationOptions: headers.BitmexConfig},
-	UISettings:							{ screen: UISettings, navigationOptions: headers.UISettings},
-	TradesNotificationsSettings:		{ screen: TradesSettings, navigationOptions: headers.TradesSettings},
-	DeadManSettings:					{ screen: DeadManSettings, navigationOptions: headers.DeadManSettings},
-    Notifications:                      { screen: Notifications, navigationOptions: headers.Notifications}
-})
+	Home: 								               { screen: Home, navigationOptions: headers.Home },
+	Orders: 							               { screen: Orders, navigationOptions: headers.Orders },
+  Config:                              { screen: Config, navigationOptions: headers.Config},
+}, animation.normal)
 
 //---------------------------------------------------------s
 
 const NewOrder=createStackNavigator({
-	PlaceOrder: 	{ screen: PlaceOrder, navigationOptions: headers.PlaceOrder },
-	Calculator:		{ screen: CalculatorTabsNavigator, navigationOptions:headers.Calculator}
-})
+	PlaceOrder: 	                       { screen: PlaceOrder, navigationOptions: headers.PlaceOrder },
+	Calculator:		                       { screen: CalculatorTabsNavigator, navigationOptions:headers.Calculator}
+}, animation.normal)
 
 //---------------------------------------------------------
 
@@ -98,9 +93,16 @@ const StatsNavigator=createStackNavigator({
 //---------------------------------------------------------
 
 const AccountNavigator=createStackNavigator({
-	Account: 		{ screen: Account, navigationOptions: headers.Account },
-	Transfer:		{ screen: Transfer, navigationOptions: headers.Transfer }
-})
+	Account: 		                         { screen: Account, navigationOptions: headers.Account },
+	Transfer:		                         { screen: Transfer, navigationOptions: headers.Transfer },
+  UserLogs:                            { screen: UserLogs, navigationOptions: headers.UserLogs },
+  Config:                              { screen: Config, navigationOptions: headers.Config},
+  BitmexConfig:                        { screen: BitmexConfig, navigationOptions: headers.BitmexConfig},
+  UISettings:                          { screen: UISettings, navigationOptions: headers.UISettings},
+  TradesNotificationsSettings:         { screen: TradesSettings, navigationOptions: headers.TradesSettings},
+  DeadManSettings:                     { screen: DeadManSettings, navigationOptions: headers.DeadManSettings},
+  Notifications:                       { screen: Notifications, navigationOptions: headers.Notifications}
+}, animation.normal)
 
 
 const SettingsNavigator=createStackNavigator({

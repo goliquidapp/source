@@ -23,6 +23,8 @@ import NavigationService from '../../helpers/navigate.js';
 
 import config from '../../config.js';
 
+import { hook } from 'cavy';
+
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -155,7 +157,8 @@ class Login extends Component{
 								textStyle={styles.textStyle}
 								placeholder={"App ID"}
 								underline={false}
-								nextRef={this.secretInput}/>
+								nextRef={this.refs['Login.AppSecretInput']}
+								ref={this.props.generateTestHook('Login.AppIDInput')}/>
 						<Input 	onChangeText={(value)=>this.setState({appSecret:value})}
 								value={appSecret}
 								placeholderTextColor={Theme['dark'].secondaryText}
@@ -163,13 +166,17 @@ class Login extends Component{
 								placeholder={"App Secret"}
 								secureTextEntry={true}
 								underline={false}
-								ref={(ref)=>this.secretInput=ref}/>
+								ref={this.props.generateTestHook('Login.AppSecretInput')}/>
 					</View>
 					<View style={styles.buttons}>
 						{
 							loading?
 							<ActivityIndicator color={Theme['dark'].highlighted}/>:
-							<Button colors={Theme['dark'].highlightedGrad} text={"Log In"} onPress={this.saveSettings} buttonStyle={styles.button} textStyle={styles.save}/>
+							<Button colors={Theme['dark'].highlightedGrad} 
+									text={"Log In"} onPress={this.saveSettings} 
+									buttonStyle={styles.button} 
+									textStyle={styles.save}
+									ref={this.props.generateTestHook('Login.LoginButton')}/>
 						}
 					</View>
 				</KeyboardAvoidingView>
@@ -208,7 +215,7 @@ class Login extends Component{
 		const {privacyPolicyVisible, proceed}=this.state;
 		return (
 				<Popup visible={privacyPolicyVisible} onClose={this.closePolicy}>
-					<View style={styles.dialog}>
+					<View style={styles.dialog} ref={this.props.generateTestHook('Login.PrivacyPolicyModal')}>
 						<ScrollView showsVerticalScrollIndicator={false}>
 							<View style={styles.dialogContent}>
 								<Text style={styles.title}>Liquid</Text>
@@ -219,7 +226,11 @@ class Login extends Component{
 								{this.renderLongText(privacyPolicy.logData)}
 							</View>
 						</ScrollView>
-						<Button text={`Agree & ${proceed?'Continue':'Close'}`} onPress={this.closePolicy} buttonStyle={styles.dialogButton} textStyle={styles.dialogText}/>
+						<Button text={`Agree & ${proceed?'Continue':'Close'}`} 
+								onPress={this.closePolicy} 
+								buttonStyle={styles.dialogButton} 
+								textStyle={styles.dialogText}
+								ref={this.props.generateTestHook('Login.PrivacyPolicyConfirmButton')}/>
 					</View>
 				</Popup>
 			)
@@ -454,4 +465,4 @@ const mapStateToProps=(state)=>{
 	}
 }
 
-export default connect(mapStateToProps,{updateAuthSettings, validateAuth})(Login);
+export default connect(mapStateToProps,{updateAuthSettings, validateAuth})(hook(Login));

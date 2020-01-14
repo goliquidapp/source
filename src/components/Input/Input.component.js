@@ -14,6 +14,13 @@ class Input extends Component{
             else if (!this.state.minus && this.props.value[0]==='-') this.onChangeText(this.props.value.substr(1))
         })
     }
+    outsideClick=(evt)=>{
+        if (this.props.onClickOutside){
+            evt.persist();
+            if (this.input._nativeTag!==evt.target) this.props.onClickOutside();
+        }
+        
+    }
     onChangeText=(value)=>{
         if (this.props.withMinus){
             var minus;
@@ -26,9 +33,9 @@ class Input extends Component{
     }
 	render(){
         const {minus}=this.state;
-		const {readOnly,keyboardType,textStyle, containerStyle,placeholder,value,error,onChangeText, nextRef, placeholderTextColor, underline, secureTextEntry, withMinus}=this.props
+		const {onFocus, readOnly,keyboardType,textStyle, containerStyle,placeholder,value,error,onChangeText, nextRef, placeholderTextColor, underline, secureTextEntry, withMinus}=this.props
 		return (
-			<View style={[styles.container, containerStyle]}>
+            <View style={[styles.container, containerStyle]} onStartShouldSetResponder={this.outsideClick}>
 				<Animatable.Text transition="opacity" useNativeDriver style={value?styles.show:styles.hide}>{placeholder}</Animatable.Text>
 				<TextInput  readOnly={readOnly} 
 							keyboardType={keyboardType} 
@@ -42,7 +49,8 @@ class Input extends Component{
 							ref={(ref)=>this.input=ref}
 							onSubmitEditing={() => {if (nextRef) nextRef.input.focus()}}
 							blurOnSubmit={ !nextRef }
-							returnKeyType={ nextRef?"next":'done' }/>
+							returnKeyType={ nextRef?"next":'done' }
+                            onFocus={onFocus}/>
                 {withMinus&&<TouchableOpacity style={styles.icon} onPress={this.minusToggle}><Icon name={"minus"} type="entypo" color={minus?Theme['dark'].primaryText:Theme['dark'].secondaryText} size={18} /></TouchableOpacity>}
 			</View>
 		)

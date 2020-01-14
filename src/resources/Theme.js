@@ -21,6 +21,8 @@ export default{
 		sell:			'#FF1B75',
 		buyGrad:		['#3A94FF','#6B3CFF'],
 		sellGrad:		['#FF1B75','#ED702D'],
+		waves:			['#3A94FF','#0b407c','#1768c4'],
+		skyColor:		'#5367FF',
 		chart:{
 			background: Colors['Blue Charcoal'],
 			axisLabel:	Colors['Gray'],

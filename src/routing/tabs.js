@@ -1,8 +1,8 @@
 import React from 'react';
-import {TouchableOpacity} from 'react-native';
+import {TouchableOpacity, View, Image} from 'react-native';
 import Theme from '../resources/Theme.js';
 import {Icon} from 'react-native-elements';
-import LinearGradient from 'react-native-linear-gradient';
+import HeroButton from '../modules/HeroButton/HeroButton.component.js';
 
 export default{
 	Bottom:{
@@ -132,18 +132,9 @@ export default{
 		},
 		tabBarButtonComponent:TouchableOpacity,
 		tabBarIcon: ({ focused, horizontal, tintColor })=>{
-	    	if (focused)
-	    		return (
-	    			<LinearGradient style={{position:'absolute',top:-30, elevation:5, width:60,height:60,borderRadius:30, alignItems:'center',justifyContent:'center'}} colors={Theme['dark'].buyGrad}>
-	    				<Icon name="plus" color={Theme['dark'].primaryText} type={"font-awesome"} />
-	    			</LinearGradient>
-	    		)
-	    	else 
-	    		return (
-	    			<LinearGradient style={{position:'absolute',top:-30, elevation:5, width:60,height:60,borderRadius:30, alignItems:'center',justifyContent:'center'}} colors={Theme['dark'].buyGrad}>
-	    				<Icon name="plus" color={Theme['dark'].primaryText} type={"font-awesome"} />
-	    			</LinearGradient>
-	    		)
+    		return (
+    			<HeroButton/>
+    		)
 	    }
 	}),
 	Stats:({ navigation }) => ({
@@ -272,3 +263,5 @@ export default{
 	    }
 	})
 }
+
+

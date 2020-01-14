@@ -10,7 +10,7 @@ class Button extends Component{
 		if (colors){
 			return (
 				<LinearGradient colors={colors} style={[styles.button,buttonStyle, styles.gradient]}>
-					<TouchableOpacity onPress={onPress} style={styles.touchContainer}>
+					<TouchableOpacity onPress={onPress} ref={this.props.ref} style={styles.touchContainer}>
 						<Text style={[styles.text,textStyle]}>{text}</Text>
 					</TouchableOpacity>
 				</LinearGradient>
@@ -18,7 +18,7 @@ class Button extends Component{
 		}
 		else{
 			return (
-				<TouchableOpacity onPress={onPress} style={[styles.button,buttonStyle]}>
+				<TouchableOpacity ref={this.props.ref} onPress={onPress} style={[styles.button,buttonStyle]}>
 					<Text style={[styles.text,textStyle]}>{text}</Text>
 					{children}
 				</TouchableOpacity>

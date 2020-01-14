@@ -143,3 +143,9 @@ export const exitPrice=(entryPrice, roe, leverage, side)=>{
 		return -1*(((roe/(leverage*100.0))*entryPrice)-entryPrice)
 	}
 }
+
+export const random=()=>{
+	var num = Math.floor(Math.random()*100) + 1; // this will get a number between 1 and 99;
+	num *= Math.floor(Math.random()*2) == 1 ? 1 : -1; // this will add minus sign in 50% of cases
+	return num
+}

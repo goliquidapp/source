@@ -15,6 +15,8 @@ import ErrorPopup from '../../components/ErrorPopup/ErrorPopup.component.js';
 import {orderBook} from '../../helpers/finance.js';
 import {setLastReading} from '../../helpers/watchdog.js';
 
+import { hook } from 'cavy';
+
 class Summary extends Component{
 	state={appState: AppState.currentState}
 	componentDidMount(){
@@ -67,7 +69,8 @@ class Summary extends Component{
 					 subtitle2={`${subtitleBuyValue} ${currency.currencySign}`} 
 					 onPress={this.props.onBuy} 
 					 line={value?(value>orderBook(realtimeData).sell.min):false}
-					 disabled={disabledButtons.buy}/>
+					 disabled={disabledButtons.buy}
+					 ref={this.props.generateTestHook('Summary.BuyTagButton')}/>
 				<Tag colors={Theme['dark'].sellGrad} 
 					 label={'Sell'} 
 					 subtitle={subtitleSell1||'1 at'}
@@ -75,7 +78,8 @@ class Summary extends Component{
 					 onPress={this.props.onSell} 
 					 line={value?(value<orderBook(realtimeData).buy.max):false}
 					 align={'right'}
-					 disabled={disabledButtons.sell}/>
+					 disabled={disabledButtons.sell}
+					 ref={this.props.generateTestHook('Summary.SellTagButton')}/>
 				{this.renderError()}
 			</View>
 		)
@@ -120,4 +124,4 @@ const mapStateToProps=(state)=>{
 		settings:state.settings
 	}
 }
-export default connect(mapStateToProps,{getSummary})(Summary);
+export default connect(mapStateToProps,{getSummary})(hook(Summary));

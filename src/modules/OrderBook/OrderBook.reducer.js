@@ -1,6 +1,7 @@
 import { ORDER_BOOK_GET_STARTED, ORDER_BOOK_GET_FINISHED, ORDER_BOOK_GET_ERROR,
 		 ORDER_BOOK_WS_STARTED, ORDER_BOOK_WS_PARTIAL, ORDER_BOOK_WS_UPDATE,
-		 ORDER_BOOK_WS_DELETE, ORDER_BOOK_WS_INSERT, ORDER_BOOK_WS_FLUSH} from './OrderBook.types.js';
+		 ORDER_BOOK_WS_DELETE, ORDER_BOOK_WS_INSERT, ORDER_BOOK_WS_FLUSH,
+		ORDER_BOOK_RESET_UPDATE_FREQ} from './OrderBook.types.js';
 
 import {updateOrderBook, deleteOrderBook, insertOrderBook} from './OrderBook.helpers.js';
 
@@ -8,7 +9,9 @@ const INIT_STATE={
 	loading:false,
 	data:[],
 	realtimeData:[],
-	error:null
+	error:null,
+	updateFrequency:0,
+	freq:0
 }
 
 export default (state=INIT_STATE,action)=>{
@@ -30,8 +33,15 @@ export default (state=INIT_STATE,action)=>{
 
 		case ORDER_BOOK_WS_UPDATE:
 			var realtimeData=[...state.realtimeData];
-			updateOrderBook(realtimeData,action.payload)
-			return {...state,loading:false, realtimeData: realtimeData.sort((a,b)=>b.price-a.price)}
+			updateOrderBook(realtimeData,action.payload);
+			return {
+				...state,loading:false, 
+				realtimeData: realtimeData.sort((a,b)=>b.price-a.price), 
+				updateFrequency:state.updateFrequency+action.payload.length
+			}
+
+		case ORDER_BOOK_RESET_UPDATE_FREQ:
+			return {...state, updateFrequency:0, freq:state.updateFrequency}
 
 		case ORDER_BOOK_WS_DELETE:
 			var realtimeData=[...state.realtimeData];
