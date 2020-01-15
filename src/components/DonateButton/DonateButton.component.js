@@ -34,7 +34,7 @@ class DonateButton extends Component{
 	componentDidMount(){
 		this.animateRipple();
 		this.animateBubble();
-		this.bubblesInterval=setInterval(this.animateBubble,15*1000);
+		this.bubblesInterval=setInterval(this.animateBubble,30*1000);
 	}
 	componentWillUnmount(){
 		clearInterval(this.bubblesInterval)
