@@ -103,6 +103,11 @@ src
 - Android release:  
   - `cd android && ./gradlew assembleRelease`
 
+- Testing:
+  We use **Cavy** for integration testing.
+  - `npm test`
+  - `cavy run-android`
+
 - Binaries:
   - [Download Universal APK](https://drive.google.com/open?id=1Lwc5F0gsPDDcRc6YqyY19zqlZB3LCDYT)
   - Validate with MD5 `93AF3A0FC150A8244836F85BE5E42802`
