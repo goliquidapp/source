@@ -21,16 +21,54 @@ export const getTrades=(startDate, endDate, interval)=> async dispatch =>{
 	try{
 		dispatch({type:TRADES_GET_STARTED});
 		var intervalUnit={'1h':{unit:'hours'}, '5m':{unit:'minutes'}, '1m':{unit:'minutes'}, '1d':{unit:'days'}};
-		var start=moment(startDate).subtract(52,intervalUnit[interval].unit).format();
+		//var start=moment(startDate).subtract(52,intervalUnit[interval].unit).format();
+		var start=startDate;
 		
 		var state=store.getState();
 		const {settings}=state;
 		const currency=settings.currency;
 
-		const params=`?symbol=${currency.symbolFull}&binSize=${interval}&partial=false&partial=true&reverse=true&startTime=${start.split('T')[0]}T00%3A00%3A00.000Z&endTime=${endDate.split('T')[0]}T23%3A59%3A59.000Z`;
-		await auth('GET','/trade/bucketed'+params);
-		var response=await API.bitmex.get('/trade/bucketed'+params);
-		dispatch({type:TRADES_GET_FINISHED, payload:response.data.reverse()})
+		const samples=moment(endDate).diff(moment(start), intervalUnit[interval].unit);
+		const rounds=[];
+		const MAX_DATA=100;
+		const hundreds=parseInt(samples/MAX_DATA);
+
+		for (let i=0;i<hundreds;i++){
+			let count=MAX_DATA;
+			let startRound=moment(start).add(i*count,intervalUnit[interval].unit);
+			let endRound=moment(start).add(count*(i+1),intervalUnit[interval].unit);
+			rounds.push({
+				startRound,
+				endRound,
+				count
+			})
+		}
+		if ((samples%MAX_DATA)>0){
+			rounds.push({
+				startRound:moment(start).add(hundreds*MAX_DATA,intervalUnit[interval].unit),
+				endRound:moment(endDate),
+				count:samples%MAX_DATA
+			});
+		}
+
+		let data=[];
+		for (let i=0;i<rounds.length;i++){
+			const round=rounds[i];
+
+			const dateStart=round.startRound.format().split('T')[0];
+			const timeStart=round.startRound.format().split('T')[1].split('+')[0]+'.000Z';
+
+			const dateEnd=round.endRound.format().split('T')[0];
+			const timeEnd=round.endRound.format().split('T')[1].split('+')[0]+'.000Z';
+
+			const params=`?symbol=${currency.symbolFull}&binSize=${interval}&partial=false&partial=true&reverse=true&startTime=${dateStart}T${timeStart}&endTime=${dateEnd}T${timeEnd}`;
+			await auth('GET','/trade/bucketed'+params);
+			let response=await API.bitmex.get('/trade/bucketed'+params);
+			data=data.concat(response.data.reverse());
+			if (i===(rounds.length-1)){
+				dispatch({type:TRADES_GET_FINISHED, payload:data})
+			}
+		}
 	}catch(err){
 		if (config.debug)
 			console.log(JSON.stringify(err))

@@ -52,9 +52,9 @@ class DeadManSettings extends Component{
 					<View style={styles.column}>
 						<View style={styles.row}>
 							<Text style={styles.textStyle}>Enable Dead-Man feature</Text>
-                                <Switch value={this.state.enableDeadMan}
-                                        onValueChange={()=>this.setState({enableDeadMan:!this.state.enableDeadMan})}
-                                        color={Theme['dark'].highlighted}/>
+                            <Switch value={this.state.enableDeadMan}
+                                    onValueChange={()=>this.setState({enableDeadMan:!this.state.enableDeadMan})}
+                                    color={Theme['dark'].highlighted}/>
 						</View>
 						<View style={styles.row}>
 							<Text style={styles.textStyle}>Dead-Man Timeout (sec)</Text>

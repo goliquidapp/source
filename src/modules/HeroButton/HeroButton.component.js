@@ -8,14 +8,12 @@ import Theme from '../../resources/Theme.js';
 import config from '../../config.js';
 import navigation from '../../helpers/navigate.js';
 
-import { hook } from 'cavy';
-
-class HeroButton extends Component{
+class HeroButton extends React.PureComponent{
 	state={speed:5000};
 	componentDidUpdate(prevProps){
 		if (prevProps.orderBook.freq!==this.props.orderBook.freq){
 			const {freq}=this.props.orderBook;
-			const speed=(freq===0)?5000:(config.wavesSpeedParam/freq);
+			const speed=(freq<=20)?5000:(config.wavesSpeedParam/freq);
 			this.setState({speed});
 		}
 	}
@@ -41,7 +39,6 @@ class HeroButton extends Component{
 		return (
 			<LinearGradient style={styles.buttonContainer} 
 							colors={Theme['dark'].highlightedGrad} 
-							ref={this.props.generateTestHook('Navigator.HeroButton')} 
 							onPress={()=>navigation.navigate('PlaceOrder')}>
 				{this.renderWave()}
 			    <Icon containerStyle={styles.button} name="plus" color={Theme['dark'].primaryText} type={"font-awesome"} />
@@ -86,4 +83,4 @@ const mapStateToProps=(state)=>{
 	}
 }
 
-export default connect(mapStateToProps, null)(hook(HeroButton));
+export default connect(mapStateToProps, null)(HeroButton);

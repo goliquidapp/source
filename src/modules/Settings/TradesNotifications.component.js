@@ -14,17 +14,22 @@ import Theme from '../../resources/Theme.js';
 import Colors from '../../resources/Colors.js';
 import config from '../../config.js';
 
+
+const isIOS = Platform.OS === 'ios';
+
 class TradesSettings extends Component{
 	state={...this.props.settings}
-	async componentDidMount(){
+	componentDidMount(){
 		this.setState({...this.props.settings})
 	}
 	saveSettings=()=>{
-		this.state.channels.map((channel)=>{
-			if (channel.enabled){
-				this.subscribe(channel.label);
-			}else{
-				this.unsubscribe(channel.label);
+		this.state.channels.map((channel,index)=>{
+			if (channel.type==='High Trades'){
+				if (channel.enabled){
+					this.subscribe(channel.label);
+				}else{
+					this.unsubscribe(channel.label);
+				}
 			}
 		})
 		this.props.updateSettings(this.state);
@@ -32,7 +37,8 @@ class TradesSettings extends Component{
 	}
 	subscribe=async (channel)=>{
 		try{
-			var response=await messaging().subscribeToTopic(channel);
+			if (isIOS) await messaging().subscribeToTopic(channel+'_ios');
+			else await messaging().subscribeToTopic(channel);
 		}catch(err){
 			if (config.debug)
 				console.log(err);
@@ -40,7 +46,8 @@ class TradesSettings extends Component{
 	}
 	unsubscribe=async (channel)=>{
 		try{
-			var response=await messaging().unsubscribeFromTopic(channel);
+			if (isIOS) await messaging().subscribeToTopic(channel+'_ios');
+			else await messaging().unsubscribeFromTopic(channel);
 		}catch(err){
 			if (config.debug)
 				console.log(err);
@@ -52,9 +59,10 @@ class TradesSettings extends Component{
 		this.setState({channels:newChannels})
 	}
 	renderCheckToggle=(index)=>{
+		if (this.state.channels[index].type!=='High Trades') return;
 		return (
 				<View style={styles.row} key={index.toString()}>
-					<Text style={styles.textStyle}>{this.state.channels[index].label}</Text>
+					<Text style={styles.textStyle}>{this.state.channels[index].name}</Text>
                         <Switch value={this.state.channels[index].enabled}
                                 onValueChange={()=>this.updateChannel(index)}
                                 color={Theme['dark'].highlighted}/>
@@ -64,16 +72,18 @@ class TradesSettings extends Component{
 	render(){
 		const {appID, appSecret}=this.state;
 		return (
-				<View style={styles.container}>
+			<View style={styles.container}>
+				<ScrollView>
 					<View style={styles.column}>
 						{this.state.channels.map((channel,index)=>this.renderCheckToggle(index))}
 					</View>
-					<View style={styles.buttons}>
-						<Button text={"Save"} onPress={this.saveSettings} buttonStyle={styles.button} textStyle={styles.save}/>
-						<Button color={Colors['Tuna']} text={"Cancel"} onPress={this.props.onClose} buttonStyle={[styles.button,styles.cancel]} textStyle={styles.cancel}/>
-					</View>
+				</ScrollView>
+				<View style={styles.buttons}>
+					<Button text={"Save"} onPress={this.saveSettings} buttonStyle={styles.button} textStyle={styles.save}/>
+					<Button color={Colors['Tuna']} text={"Cancel"} onPress={this.props.onClose} buttonStyle={[styles.button,styles.cancel]} textStyle={styles.cancel}/>
 				</View>
-			)
+			</View>
+		)
 	}
 }
 

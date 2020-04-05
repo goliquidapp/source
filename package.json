@@ -5,7 +5,9 @@
   "scripts": {
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "debug-notifications": "adb logcat -s RNFirebaseMsgService:V",
+    "debug-android": "adb logcat *:S ReactNative:V ReactNativeJS:V"
   },
   "dependencies": {
     "@egendata/react-native-simple-crypto": "^1.0.1",
@@ -14,10 +16,12 @@
     "@react-native-community/netinfo": "^4.2.2",
     "@react-native-community/push-notification-ios": "^1.0.2",
     "@react-native-community/slider": "^2.0.0",
-    "@react-native-firebase/app": "6.0.2",
-    "@react-native-firebase/crashlytics": "6.0.2",
-    "@react-native-firebase/messaging": "^6.0.2",
+    "@react-native-firebase/analytics": "^6.3.4",
+    "@react-native-firebase/app": "^6.3.4",
+    "@react-native-firebase/crashlytics": "^6.3.4",
+    "@react-native-firebase/messaging": "^6.3.4",
     "axios": "^0.19.0",
+    "axios-retry-interceptor": "^1.1.0",
     "bit_mex_api": "^1.2.1",
     "bollinger-bands": "^3.0.1",
     "html-entities": "^1.2.1",
@@ -40,7 +44,7 @@
     "react-native-gesture-handler": "^1.4.1",
     "react-native-in-app-message": "github:ammarrajaba/react-native-in-app-message",
     "react-native-keyboard-input": "^6.0.0",
-    "react-native-keyboard-tracking-view": "^5.6.1",
+    "react-native-keyboard-tracking-view": "github:ammarrajaba/react-native-keyboard-tracking-view",
     "react-native-keychain": "^4.0.1",
     "react-native-linear-gradient": "^2.5.6",
     "react-native-modal": "^11.4.0",
@@ -64,7 +68,8 @@
     "react-navigation-transitions": "^1.0.12",
     "react-redux": "^7.1.1",
     "redux": "^4.0.4",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "web3": "^1.2.6"
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",

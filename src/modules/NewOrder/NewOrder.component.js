@@ -1,7 +1,10 @@
 import React, {Component} from 'react';
 import {LayoutAnimation, Dimensions, KeyboardAvoidingView, 
 		View, Alert, Picker, Text, TouchableOpacity, 
-		ActivityIndicator, Keyboard, Platform} from 'react-native';
+		ActivityIndicator, Keyboard, Platform,
+		ScrollView } from 'react-native';
+
+import { Switch, Checkbox } from 'react-native-paper';
 
 import { Icon } from 'react-native-elements';
 import {AllHtmlEntities} from 'html-entities';
@@ -19,11 +22,13 @@ import Tag from '../../components/Tag/Tag.component.js';
 import ErrorPopup from '../../components/ErrorPopup/ErrorPopup.component.js';
 import IconButton from '../../components/IconButton/IconButton.component.js';
 import Overlay from '../../components/Overlay/Overlay.component.js';
-import CustomKeyboard from '../../components/CustomKeyboard/CustomKeyboard.component.js'
+import CustomKeyboard from '../../components/CustomKeyboard/CustomKeyboard.component.js';
+import Popup from '../../components/Popup/Popup.component.js';
+import Button from '../../components/Button/Button.component.js';
 
 import Summary from '../Summary/Summary.component.js';
 
-import {getCurrentPrice, placeOrder} from './NewOrder.actions.js';
+import {getCurrentPrice, placeOrder, placeOrderBulk} from './NewOrder.actions.js';
 import {getMyOrders} from '../MyOrders/MyOrders.actions.js';
 import {getPosition} from '../Position/Position.actions.js';
 
@@ -32,7 +37,7 @@ import ordTypes from './NewOrder.consts.js';
 import { orderBook} from '../../helpers/finance.js';
 import NavigationService from '../../helpers/navigate.js';
 
-import { hook } from 'cavy';
+import {orderBulk} from './Distributions.ts';
 
 const HEIGHT=Dimensions.get('window').height
 const WIDTH=Dimensions.get('window').width
@@ -52,9 +57,19 @@ class NewOrder extends Component{
 			pegPriceType:'',
 			pegOffsetValue:0.0,
 			execInst:'',
+			closeOnTrigger:true,
 			disabledButtons:{buy:false, sell:false},
 			keyboardOff:true,
-            keyboard:''
+            keyboard:'',
+            distribution:'Uniform',
+            orderCount:10,
+            allContractsCount:'',
+            apart:'',
+            rangeStart:'',
+            rangeEnd:'',
+            useApart:true,
+            scaledOrdersPopup:false,
+            scaledOrders:[]
 		};
 		this.moreEqual=new AllHtmlEntities().decode('&#8805');
 		this.lessEqual=new AllHtmlEntities().decode('&#8804');
@@ -127,8 +142,29 @@ class NewOrder extends Component{
         
         this.setState({pegOffsetValue:value, disabledButtons})
     }
+    showScaledOrders=(scaledOrders)=>{
+    	let avgScaledOrders=0;
+    	scaledOrders.orders.map((order)=>avgScaledOrders+=order.price);
+    	avgScaledOrders=(avgScaledOrders/(scaledOrders.orders.length)).toFixed(2);
+
+    	this.setState({scaledOrdersPopup:true,scaledOrders, avgScaledOrders})
+    }
+    closeScaledOrders=()=>{
+		this.setState({scaledOrdersPopup:false,scaledOrders:[]})
+    }
+    submitScaleOrders=()=>{
+    	const {scaledOrders, leverage}=this.state;
+
+    	this.props.placeOrderBulk(scaledOrders, leverage)
+    	this.closeScaledOrders();
+    }
+    getBuyPrice=()=>{
+    	const {realtimeData}=this.props.orderBook;
+    	const buyValue=orderBook(realtimeData).buy.max
+    	return buyValue
+    }
 	shapeForm=()=>{
-		const {orderQty, price, clOrdID, ordType, stopPx, pegOffsetValue, timeInForce}=this.state;
+		const {orderQty, price, clOrdID, ordType, stopPx, pegOffsetValue, timeInForce, closeOnTrigger}=this.state;
 		if (!orderQty) 	 return null;
 		if (this.props.placingOrder) return null;
 		if (ordType==='Limit' && !price) return null;
@@ -142,7 +178,7 @@ class NewOrder extends Component{
 			case 'Market':
 				return {orderQty, clOrdID, ordType}
 			case 'StopMarket':
-				return {orderQty, clOrdID, ordType:'Stop', stopPx, execInst: "Close,LastPrice"}
+				return {orderQty, clOrdID, ordType:'Stop', stopPx, execInst: `${closeOnTrigger?'Close,':''}LastPrice`}
 			case 'TakeProfitMarket':
 				return {orderQty, clOrdID, ordType:'MarketIfTouched', stopPx, execInst: "Close,LastPrice"}
 			case 'StopLimit':
@@ -156,47 +192,124 @@ class NewOrder extends Component{
 		}
 
 	}
-	onSell=()=>{
-		const {leverage}=this.state;
-		const {placingOrder}=this.props.newOrder;
-		var form=this.shapeForm();
-		if (!form || placingOrder) return
-		const message='You are about to place an order, continue ?';
+	generateScaledOrders=(side)=>{
+		const {distribution, apart, orderCount, useApart, allContractsCount}=this.state;
+		const {symbolFull}=this.props.settings.currency;
+		const {realtimeData}=this.props.orderBook;
+		
+		let rangeStart;
+		let rangeEnd;
+		let orders;
+
+		if (useApart){
+			if (!distribution || !apart || !allContractsCount || !orderCount) return;
+
+			const buyValue=orderBook(realtimeData).buy.max
+			const sellValue=orderBook(realtimeData).sell.min
+
+			if (side==='Buy'){
+				rangeStart=sellValue-parseFloat(apart);
+				rangeEnd=sellValue-(parseFloat(apart)*parseFloat(orderCount));
+			}
+			else if (side==='Sell'){
+				rangeStart=buyValue+parseFloat(apart);
+				rangeEnd=buyValue+(parseFloat(apart)*parseFloat(orderCount));
+			}
+
+			orders=orderBulk({
+				quantity:allContractsCount, 
+				n_tp:parseInt(orderCount), 
+				start:rangeStart, 
+				end:rangeEnd, 
+				side, 
+				distribution, 
+				symbol:symbolFull
+			});
+		}else{
+			rangeStart=this.state.rangeStart;
+			rangeEnd=this.state.rangeEnd;
+
+			if (!distribution || !rangeStart || !rangeEnd || !allContractsCount || !orderCount) return;
+
+			if (rangeStart>rangeEnd) return;
+
+			orders=orderBulk({
+				quantity:allContractsCount, 
+				n_tp:parseInt(orderCount), 
+				start:parseInt(rangeStart), 
+				end:parseInt(rangeEnd), 
+				side, 
+				distribution, 
+				symbol:symbolFull
+			});
+
+		}
+
+		if (orders.length===0) return;
+
+		const message="You are about to make Scale Order(s),please review these orders and then submit.\n\nContinue to orders review?"
 		Alert.alert('Place Order',
 					message,
 					[
 						{
-							text: 'OK',
-							onPress: () => {
-								this.props.placeOrder({side:'Sell', leverage,...form});
-							}
+							text:	'Continue',
+							onPress: ()=>this.showScaledOrders(orders)
 						},
 						{
-							text: 'Cancel',
-							onPress: () => {}
+							text:	'Cancel',
+							onPress: ()=>{}
 						}
 					])
+
+
+	}
+	onSell=()=>{
+		const {leverage, ordType}=this.state;
+		const {placingOrder}=this.props.newOrder;
+		if (ordType==='ScaleOrder') this.generateScaledOrders('Sell');
+		else {
+			var form=this.shapeForm();
+			if (!form || placingOrder) return
+			const message='You are about to place an order, continue ?';
+			Alert.alert('Place Order',
+						message,
+						[
+							{
+								text: 'OK',
+								onPress: () => {
+									this.props.placeOrder({side:'Sell', leverage,...form});
+								}
+							},
+							{
+								text: 'Cancel',
+								onPress: () => {}
+							}
+						])
+		}
 	}
 	onBuy=()=>{
-		const {leverage}=this.state;
+		const {leverage, ordType}=this.state;
 		const {placingOrder}=this.props.newOrder;
-		var form=this.shapeForm();
-		if (!form || placingOrder) return
-		const message='You are about to place an order, continue ?';
-		Alert.alert('Place Order',
-					message,
-					[
-						{
-							text: 'OK',
-							onPress: () => {
-								this.props.placeOrder({side:'Buy', leverage,...form})
+		if (ordType==='ScaleOrder') this.generateScaledOrders('Buy');
+		else{
+			var form=this.shapeForm();
+			if (!form || placingOrder) return
+			const message='You are about to place an order, continue ?';
+			Alert.alert('Place Order',
+						message,
+						[
+							{
+								text: 'OK',
+								onPress: () => {
+									this.props.placeOrder({side:'Buy', leverage,...form})
+								}
+							},
+							{
+								text: 'Cancel',
+								onPress: () => {}
 							}
-						},
-						{
-							text: 'Cancel',
-							onPress: () => {}
-						}
-					])
+						])
+		}
 	}
 	showHelp=()=>{
 		const message=ordTypes[this.state.ordType]
@@ -204,6 +317,10 @@ class NewOrder extends Component{
 	}
 	showHelpTIF=()=>{
 		const message=ordTypes[this.state.timeInForce]
+		Alert.alert("Help", message)
+	}
+	showHelpSOD=()=>{
+		const message=ordTypes[this.state.distribution]
 		Alert.alert("Help", message)
 	}
 	setLeverage=(leverage)=>{
@@ -216,6 +333,44 @@ class NewOrder extends Component{
 			disabledButtons={buy:true, sell:true}
 		}
 		this.setState({ordType:itemValue, disabledButtons, pegOffsetValue:''})
+	}
+	renderScaledOrdersReview=()=>{
+		const {scaledOrders, scaledOrdersPopup, avgScaledOrders}=this.state;
+		return (
+			<Popup	visible={scaledOrdersPopup}
+					onClose={this.closeScaledOrders}>
+				<View style={styles.dialog}>
+					<ScrollView>
+						<View style={styles.dialogContent}>
+							<Text style={styles.title}>Scale Orders Review</Text>
+							<View style={styles.column}>
+								<View style={styles.row}>
+									<Text style={[styles.textStyle, styles.rowItem]}>Side</Text>
+									<Text style={[styles.textStyle, styles.rowItem]}>Order Qty</Text>
+									<Text style={[styles.textStyle, styles.rowItem]}>Price</Text>
+								</View>
+								{
+									scaledOrders.orders.map((order,i)=>
+										<View key={i.toString()} style={styles.row}>
+											<Text style={[styles.textStyle, styles.side[order.side], styles.rowItem]}>{order.side}</Text>
+											<Text style={[styles.textStyle, styles.rowItem]}>{order.orderQty}</Text>
+											<Text style={[styles.textStyle, styles.rowItem]}>{order.price}</Text>
+										</View>
+									)
+								}
+							</View>
+						</View>
+					</ScrollView>
+					<View style={styles.column}>
+						<View style={styles.rowLine}>
+							<Text style={styles.label}>Average Price: <Text style={styles.average}>{avgScaledOrders}</Text></Text>
+						</View>
+						<Button text={`Confirm`} onPress={this.submitScaleOrders} buttonStyle={styles.dialogButton} textStyle={styles.textButton}/>
+						<Button text={`Cancel`} onPress={this.closeScaledOrders} buttonStyle={styles.dialogCancelButton} textStyle={styles.textCancelButton}/>
+					</View>
+				</View>
+			</Popup>
+		)
 	}
 	renderLeverage2=()=>{
 		const {leverage}=this.state;
@@ -240,7 +395,7 @@ class NewOrder extends Component{
 	}
 	renderLimitForm=()=>{
 		const {loading, data, placingOrder}=this.props.newOrder;
-		const {orderQty, price, clOrdID, ordType, stopPx, pegOffsetValue, currentPrice, timeInForce}=this.state;
+		const {orderQty, price, clOrdID, ordType, stopPx, pegOffsetValue, currentPrice, timeInForce, keyboardOff}=this.state;
 		return (
 			<View>
 				<View style={styles.form}>
@@ -253,30 +408,33 @@ class NewOrder extends Component{
 								placeholderTextColor={Theme['dark'].secondaryText}
 								keyboardType={"number-pad"}
 								error={!orderQty.toString()}
-								containerStyle={styles.input}
-								ref={this.props.generateTestHook('NewOrder.QtyInput')}/>
+								containerStyle={styles.input}/>
 
 						<Input 	readOnly={placingOrder}
 								onChangeText={(value)=>this.setState({price:value})}
 								value={price.toString()}
+								counter={keyboardOff}
+								autofill={(keyboardOff)?this.getBuyPrice:undefined}
+								autofillIcon={{name:"usd",type:"font-awesome"}}
 								placeholder={"Limit Price (USD)"}
 								textStyle={styles.textStyle}
 								placeholderTextColor={Theme['dark'].secondaryText}
 								keyboardType={"decimal-pad"}
 								error={!placingOrder.toString()}
-								containerStyle={styles.input}
-								ref={this.props.generateTestHook('NewOrder.PriceInput')}/>
+								containerStyle={styles.input}/>
 					</View>
-					<Slider
-					    style={{width: 200, height: 50}}
-					    minimumValue={currentPrice-215}
-					    maximumValue={currentPrice+215}
-					    value={currentPrice}
-					    step={0.5}
-					    onValueChange={(value)=>this.setState({price:value})}
-					    minimumTrackTintColor={Theme['dark'].positive}
-					    maximumTrackTintColor={Theme['dark'].negative}
-					/>
+					<View style={styles.row}>
+						<Slider
+						    style={{width: 200, height: 50}}
+						    minimumValue={currentPrice-215}
+						    maximumValue={currentPrice+215}
+						    value={currentPrice}
+						    step={0.5}
+						    onValueChange={(value)=>this.setState({price:value})}
+						    minimumTrackTintColor={Theme['dark'].positive}
+						    maximumTrackTintColor={Theme['dark'].negative}
+						/>
+					</View>
 				</View>
 				<View style={styles.ordType}>
 					<Text style={styles.label}>Time in force</Text>
@@ -294,7 +452,7 @@ class NewOrder extends Component{
 					</View>
 				</View>
 			</View>
-			)
+		)
 	}
 	renderMarketForm=()=>{
 		const {loading, data, placingOrder}=this.props.newOrder;
@@ -314,7 +472,7 @@ class NewOrder extends Component{
 	}
 	renderStopForm=()=>{
 		const {loading, data, placingOrder}=this.props.newOrder;
-		const {orderQty, price, clOrdID, ordType, stopPx, pegOffsetValue}=this.state;
+		const {orderQty, price, clOrdID, ordType, stopPx, pegOffsetValue, keyboardOff, closeOnTrigger}=this.state;
 		return (
 				<View style={styles.form}>
 					<View style={styles.row}>
@@ -344,6 +502,9 @@ class NewOrder extends Component{
 
 									this.setState({stopPx:value, price:value, disabledButtons})
 								}}
+								counter={keyboardOff}
+								autofill={(keyboardOff)?this.getBuyPrice:undefined}
+								autofillIcon={{name:"usd",type:"font-awesome"}}
 								value={stopPx.toString()}
 								placeholder={"Stop Price (USD)"}
 								textStyle={styles.textStyle}
@@ -352,12 +513,19 @@ class NewOrder extends Component{
 								error={!stopPx.toString()}
 								containerStyle={styles.input}/>
 					</View>
+					<View style={styles.optionForm}>
+						<Text style={styles.switchLabel}>Close on Trigger</Text>
+						<Checkbox status={closeOnTrigger ? 'checked' : 'unchecked'}
+								  onPress={() => { this.setState({ closeOnTrigger: !closeOnTrigger }); }}
+                                  color={Theme['dark'].highlighted}
+                                  uncheckedColor={Theme['dark'].secondaryText}/>
+					</View>
 				</View>
 			)
 	}
 	renderStopLimitForm=()=>{
 		const {loading, data, placingOrder}=this.props.newOrder;
-		const {orderQty, price, clOrdID, ordType, stopPx, pegOffsetValue, currentPrice}=this.state;
+		const {orderQty, price, clOrdID, ordType, stopPx, pegOffsetValue, currentPrice, keyboardOff}=this.state;
 		return (
 				<View style={styles.form}>
 					<View style={styles.row}>
@@ -381,7 +549,7 @@ class NewOrder extends Component{
 								error={!placingOrder.toString()}
 								containerStyle={styles.input}/>
 					</View>
-					<Input readOnly={placingOrder}
+					<Input 	readOnly={placingOrder}
 							onChangeText={(value)=>{
 								const {price}=this.state;
 								const {realtimeData}=this.props.orderBook;
@@ -399,20 +567,25 @@ class NewOrder extends Component{
 							}}
 							value={stopPx.toString()}
 							placeholder={"Stop Price (USD)"}
+							counter={keyboardOff}
+							autofill={(keyboardOff)?this.getBuyPrice:undefined}
+							autofillIcon={{name:"usd",type:"font-awesome"}}
 							textStyle={styles.textStyle}
 							placeholderTextColor={Theme['dark'].secondaryText}
 							keyboardType={"decimal-pad"}
 							error={!stopPx.toString()}/>
-					<Slider
-					    style={{width: 200, height: 50}}
-					    minimumValue={currentPrice-215}
-					    maximumValue={currentPrice+215}
-					    value={currentPrice}
-					    step={0.5}
-					    onValueChange={(value)=>this.setState({price:value})}
-					    minimumTrackTintColor={Theme['dark'].positive}
-					    maximumTrackTintColor={Theme['dark'].negative}
-					/>
+					<View style={styles.row}>
+						<Slider
+						    style={{width: 200, height: 50}}
+						    minimumValue={currentPrice-215}
+						    maximumValue={currentPrice+215}
+						    value={currentPrice}
+						    step={0.5}
+						    onValueChange={(value)=>this.setState({price:value})}
+						    minimumTrackTintColor={Theme['dark'].positive}
+						    maximumTrackTintColor={Theme['dark'].negative}
+						/>
+					</View>
 				</View>
 			)
 	}
@@ -461,7 +634,7 @@ class NewOrder extends Component{
 	}
 	renderTakeProfitLimit=()=>{
 		const {loading, data, placingOrder}=this.props.newOrder;
-		const {orderQty, price, clOrdID, ordType, stopPx, pegOffsetValue, currentPrice}=this.state;
+		const {orderQty, price, clOrdID, ordType, stopPx, pegOffsetValue, currentPrice, keyboardOff}=this.state;
 		return (
 				<View style={styles.form}>
 					<View style={styles.row}>
@@ -502,26 +675,31 @@ class NewOrder extends Component{
 							}}
 							value={stopPx.toString()}
 							placeholder={"Trigger Price (USD)"}
+							counter={keyboardOff}
+							autofill={(keyboardOff)?this.getBuyPrice:undefined}
+							autofillIcon={{name:"usd",type:"font-awesome"}}
 							textStyle={styles.textStyle}
 							placeholderTextColor={Theme['dark'].secondaryText}
 							keyboardType={"number-pad"}
 							error={!stopPx.toString()}/>
-					<Slider
-					    style={{width: 200, height: 50}}
-					    minimumValue={currentPrice-215}
-					    maximumValue={currentPrice+215}
-					    value={currentPrice}
-					    step={0.5}
-					    onValueChange={(value)=>this.setState({price:value})}
-					    minimumTrackTintColor={Theme['dark'].positive}
-					    maximumTrackTintColor={Theme['dark'].negative}
-					/>
+					<View style={styles.row}>
+						<Slider
+						    style={{width: 200, height: 50}}
+						    minimumValue={currentPrice-215}
+						    maximumValue={currentPrice+215}
+						    value={currentPrice}
+						    step={0.5}
+						    onValueChange={(value)=>this.setState({price:value})}
+						    minimumTrackTintColor={Theme['dark'].positive}
+						    maximumTrackTintColor={Theme['dark'].negative}
+						/>
+					</View>
 				</View>
 			)
 	}
 	renderTakeProfitMarket=()=>{
 		const {loading, data, placingOrder}=this.props.newOrder;
-		const {orderQty, price, clOrdID, ordType, stopPx, pegOffsetValue}=this.state;
+		const {orderQty, price, clOrdID, ordType, stopPx, pegOffsetValue, keyboardOff}=this.state;
 		return (
 				<View style={styles.form}>
 					<View style={styles.row}>
@@ -535,7 +713,7 @@ class NewOrder extends Component{
 								error={!orderQty.toString()}
 								containerStyle={styles.input}/>
 
-						<Input readOnly={placingOrder}
+						<Input  readOnly={placingOrder}
 								onChangeText={(value)=>{
 									const {price}=this.state;
 									const {realtimeData}=this.props.orderBook;
@@ -552,6 +730,9 @@ class NewOrder extends Component{
 									this.setState({stopPx:value, price:value, disabledButtons})
 								}}
 								value={stopPx.toString()}
+								counter={keyboardOff}
+								autofill={(keyboardOff)?this.getBuyPrice:undefined}
+								autofillIcon={{name:"usd",type:"font-awesome"}}
 								placeholder={"Trigger Price (USD)"}
 								textStyle={styles.textStyle}
 								placeholderTextColor={Theme['dark'].secondaryText}
@@ -561,6 +742,109 @@ class NewOrder extends Component{
 					</View>
 				</View>
 			)
+	}
+	renderScaleOrder=()=>{
+		const {loading, data, placingOrder}=this.props.newOrder;
+		const {
+			orderCount, 
+			apart, useApart,
+			rangeStart, rangeEnd,
+			allContractsCount,
+			distribution, scaledOrdersPopup, keyboardOff}=this.state;
+
+		return (
+			<View>
+				<View style={styles.form}>
+					{
+						(keyboardOff)&&
+						<View style={styles.row}>
+							<Text style={styles.switchLabel}>Use Apart instead of manual price range</Text>
+							<Switch value={this.state.useApart}
+	                                onValueChange={()=>this.setState({useApart:!useApart})}
+	                                color={Theme['dark'].highlighted}/>
+						</View>
+					}
+					<View style={styles.row}>
+						<Input 	readOnly={placingOrder}
+								onChangeText={(value)=>this.setState({allContractsCount:value})}
+								value={allContractsCount.toString()}
+								placeholder={"All Contracts Count"}
+								textStyle={styles.textStyle}
+								placeholderTextColor={Theme['dark'].secondaryText}
+								keyboardType={"number-pad"}
+								error={!allContractsCount.toString()}
+								containerStyle={styles.input}/>
+
+						<Input 	readOnly={placingOrder}
+								onChangeText={(value)=>this.setState({orderCount:value})}
+								value={orderCount.toString()}
+								placeholder={"Order Count"}
+								textStyle={styles.textStyle}
+								placeholderTextColor={Theme['dark'].secondaryText}
+								keyboardType={"number-pad"}
+								error={!orderCount.toString()}
+								containerStyle={styles.input}/>
+					</View>
+					{
+						useApart?
+						<View style={styles.row}>
+							<Input 	readOnly={placingOrder}
+									onChangeText={(value)=>this.setState({apart:value})}
+									value={apart.toString()}
+									placeholder={"Apart"}
+									textStyle={styles.textStyle}
+									placeholderTextColor={Theme['dark'].secondaryText}
+									keyboardType={"decimal-pad"}
+									error={(!apart.toString()||apart<=0)}/>
+						</View>:
+						<View style={styles.row}>
+	                        <Input 	readOnly={placingOrder}
+									onChangeText={(value)=>this.setState({rangeStart:value})}
+									value={rangeStart.toString()}
+									counter={keyboardOff}
+									autofill={(keyboardOff)?this.getBuyPrice:undefined}
+									autofillIcon={{name:"usd",type:"font-awesome"}}
+									placeholder={"Range Start (USD)"}
+									textStyle={styles.textStyle}
+									placeholderTextColor={Theme['dark'].secondaryText}
+									keyboardType={"number-pad"}
+									error={(!rangeStart.toString())||(rangeStart>rangeEnd)}
+									containerStyle={styles.input}/>
+
+							<Input 	readOnly={placingOrder}
+									onChangeText={(value)=>this.setState({rangeEnd:value})}
+									counter={keyboardOff}
+									autofill={(keyboardOff)?this.getBuyPrice:undefined}
+									autofillIcon={{name:"usd",type:"font-awesome"}}
+									value={rangeEnd.toString()}
+									placeholder={"Range End (USD)"}
+									textStyle={styles.textStyle}
+									placeholderTextColor={Theme['dark'].secondaryText}
+									keyboardType={"decimal-pad"}
+									error={(!rangeEnd.toString())||(rangeStart>rangeEnd)}
+									containerStyle={styles.input}/>
+						</View>
+					}
+				</View>
+				<View style={styles.ordType}>
+					<Text style={styles.label}>Distribution</Text>
+					<View style={styles.ordTypeRow}>
+						<Picker selectedValue={distribution}
+								style={styles.dropdown}
+                				itemStyle={styles.pickerItemStyle}
+								onValueChange={(itemValue)=>this.setState({distribution:itemValue})}
+						>
+							<Picker.Item label="Uniform" 	value="Uniform" />
+							<Picker.Item label="Normal" 	value="Normal" />
+		  					<Picker.Item label="Positive" 	value="Positive" />
+		  					<Picker.Item label="Negative" 	value="Negative" />
+						</Picker>
+						<IconButton name="help-circle" type="feather" color={Theme['dark'].secondaryText} size={20} onPress={this.showHelpSOD}/>
+					</View>
+				</View>
+				{scaledOrdersPopup&&this.renderScaledOrdersReview()}
+			</View>
+		)
 	}
 	renderOverlay=()=>{
 		const {placingOrder}=this.props.newOrder;
@@ -589,6 +873,8 @@ class NewOrder extends Component{
 				return this.renderTakeProfitLimit()
 			case 'TakeProfitMarket':
 				return this.renderTakeProfitMarket()
+			case 'ScaleOrder':
+				return this.renderScaleOrder()
 			default:
 				return this.renderLimitForm()
 		}
@@ -616,19 +902,19 @@ class NewOrder extends Component{
 		const {loading}=this.props.newOrder;
 		const {orderQty, price, clOrdID, ordType, leverage, disabledButtons, keyboardOff, stopPx}=this.state;
 
-		if (ordType==='Market') {
+		if (ordType==='Market' || ordType==='TrailingStop') {
 			var buyValue=orderBook(realtimeData).buy.max
 			var sellValue=orderBook(realtimeData).sell.min
 		}
 
 		return (
-			<KeyboardAvoidingView style={styles.container} behavior="padding" ref={this.props.generateTestHook('NewOrder.ContainerView')}>
+			<KeyboardAvoidingView style={styles.container} behavior="padding">
 				<View style={styles.tagsContainer}>
 					<Summary value={(ordType==='Market')?undefined:price}
 							 subtitleBuy1={`${orderQty} @ ${(ordType==='StopLimit' || ordType==='TakeProfitLimit')?price:(ordType==='TakeProfitMarket'?'Market':'')}`}
-							 subtitleBuy2={`${(ordType==='Market' || ordType==='TrailingStop' || ordType==='StopMarket' || ordType==='StopLimit' || ordType==='TakeProfitLimit' || ordType==='TakeProfitMarket')?((ordType==='TakeProfitMarket' || ordType==='TakeProfitLimit')? this.lessEqual:this.moreEqual):''} ${loading?'-':((ordType==='StopLimit' || ordType==='TakeProfitLimit')?stopPx:((ordType==='Market')? sellValue:price))}`}
+							 subtitleBuy2={`${(ordType==='Market' || ordType==='TrailingStop' || ordType==='StopMarket' || ordType==='StopLimit' || ordType==='TakeProfitLimit' || ordType==='TakeProfitMarket')?((ordType==='TakeProfitMarket' || ordType==='TakeProfitLimit')? this.lessEqual:this.moreEqual):''} ${loading?'-':((ordType==='StopLimit' || ordType==='TakeProfitLimit')?stopPx:((ordType==='Market' || ordType==='TrailingStop')? sellValue:price))}`}
 							 subtitleSell1={`${orderQty} @ ${(ordType==='StopLimit' || ordType==='TakeProfitLimit')?price:(ordType==='TakeProfitMarket'?'Market':'')}`}
-							 subtitleSell2={`${(ordType==='Market' || ordType==='TrailingStop' || ordType==='StopMarket' || ordType==='StopLimit' || ordType==='TakeProfitLimit' || ordType==='TakeProfitMarket')?((ordType==='TakeProfitMarket' || ordType==='TakeProfitLimit')? this.moreEqual:this.lessEqual):''} ${loading?'-':((ordType==='StopLimit' || ordType==='TakeProfitLimit')?stopPx:((ordType==='Market')? buyValue:price))}`}
+							 subtitleSell2={`${(ordType==='Market' || ordType==='TrailingStop' || ordType==='StopMarket' || ordType==='StopLimit' || ordType==='TakeProfitLimit' || ordType==='TakeProfitMarket')?((ordType==='TakeProfitMarket' || ordType==='TakeProfitLimit')? this.moreEqual:this.lessEqual):''} ${loading?'-':((ordType==='StopLimit' || ordType==='TakeProfitLimit')?stopPx:((ordType==='Market' || ordType==='TrailingStop')? buyValue:price))}`}
 							 onBuy={this.onBuy}
 							 onSell={this.onSell}
 							 disabledButtons={disabledButtons}
@@ -652,6 +938,7 @@ class NewOrder extends Component{
 			  					<Picker.Item label="Trailing Stop"   	value="TrailingStop"/>
 			  					<Picker.Item label="Take Profit Limit"  value="TakeProfitLimit"/>
 			  					<Picker.Item label="Take Profit Market" value="TakeProfitMarket"/>
+			  					<Picker.Item label="Scale Order" 		value="ScaleOrder"/>
 							</Picker>
 							<IconButton name="help-circle" type="feather" color={Theme['dark'].secondaryText} size={20} onPress={this.showHelp}/>
 						</View>
@@ -700,7 +987,8 @@ const styles={
 		borderRadius:15,
 		paddingVertical:10,
 		paddingHorizontal:10,
-		alignItems:'center'
+		alignItems:'center',
+		marginVertical:10
 	},
 	ordTypeRow:{
 		width:'90%',
@@ -718,6 +1006,12 @@ const styles={
 		color:Theme['dark'].secondaryText,
 		fontFamily:Theme['dark'].fontNormal
 	},
+	switchLabel:{
+	    alignSelf:'center',
+	    marginLeft:10,
+	    color:Theme['dark'].secondaryText,
+	    fontFamily:Theme['dark'].fontNormal
+	},
 	textStyle:{
 		color:Theme['dark'].primaryText,
 		fontFamily:Theme['dark'].fontNormal
@@ -727,6 +1021,11 @@ const styles={
         height:100,
         fontSize:14,
         fontFamily:Theme['dark'].fontNormal
+    },
+    column:{
+    	flexDirection:'column',
+    	alignItems:'center',
+    	justifyContent:'center'
     },
     row:{
 		flexDirection:'row',
@@ -772,6 +1071,88 @@ const styles={
 	error:{
 		bottom:'auto',
 		top:0.7*HEIGHT
+	},
+	dialog:{
+		width:'100%',
+		height:'100%',
+		backgroundColor:Theme['dark'].primary3,
+		alignSelf:'center',
+		padding:20,
+		borderRadius:20
+	},
+	dialogContent:{
+		width:'100%',
+		flexDirection:'column',
+		alignSelf:'center',
+		alignItems:'flex-start',
+		justifyContent:'center',
+		paddingTop:20
+	},
+	title:{
+		color: Theme['dark'].primaryText,
+		fontSize:29,
+		fontWeight:'bold',
+		width:'100%',
+		textAlign:'center',
+		fontFamily:Theme['dark'].fontBold,
+		marginBottom:20
+	},
+	side:{
+		Buy:{
+			color:Theme['dark'].positive
+		},
+		Sell:{
+			color:Theme['dark'].negative
+		}
+	},
+	textButton:{
+		fontSize: 14,
+		fontFamily:Theme['dark'].fontBold,
+	},
+	dialogButton:{
+		marginTop:20,
+		width:'80%',
+		alignSelf:'center'
+	},
+	dialogCancelButton:{
+		backgroundColor:'transparent',
+		marginTop:20,
+		width:'80%',
+		alignSelf:'center',
+		elevation:0
+	},
+	textCancelButton:{
+		fontSize: 14,
+		fontFamily:Theme['dark'].fontBold,
+		color:Theme['dark'].highlighted
+	},
+	rowItem:{
+		width:'20%'
+	},
+	rowLine:{
+		alignSelf:'center',
+		padding:10,
+		marginTop:15,
+		flexDirection:'row',
+		alignItems:'center',
+		justifyContent:'flex-end',
+		width:'80%',
+		borderTopColor:Theme['dark'].primaryText,
+		borderTopWidth:1
+	},
+	optionForm:{
+		alignSelf:'center',
+		padding:10,
+		marginTop:15,
+		flexDirection:'row',
+		alignItems:'center',
+		justifyContent:'flex-end',
+		width:'100%'
+	},
+	average:{
+		color:Theme['dark'].primaryText,
+		fontSize: 14,
+		fontFamily:Theme['dark'].fontBold,
 	}
 }
 
@@ -782,4 +1163,4 @@ const mapStateToProps=(state)=>{
 		settings:state.settings
 	}
 }
-export default connect(mapStateToProps,{getCurrentPrice, placeOrder, getMyOrders, getPosition})(hook(NewOrder));
+export default connect(mapStateToProps,{getCurrentPrice, placeOrder, getMyOrders, getPosition, placeOrderBulk})(NewOrder);

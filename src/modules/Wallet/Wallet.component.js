@@ -16,6 +16,11 @@ class Wallet extends Component{
 	componentDidMount(){
 		this.props.getMyWallet();
 	}
+	componentDidUpdate(prevProps){
+		if (prevProps.settings.appID!==this.props.settings.appID && this.props.settings.appID){
+			this.props.getMyWallet();
+		}
+	}
 	renderError=()=>{
         const {error}=this.props.wallet;
         if (error) {
@@ -130,7 +135,8 @@ const styles={
 
 const mapStateToProps=(state)=>{
 	return {
-		wallet:state.wallet
+		wallet:state.wallet,
+		settings:state.settings
 	}
 }
 export default connect(mapStateToProps,{getMyWallet})(Wallet);

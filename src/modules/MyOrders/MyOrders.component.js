@@ -3,6 +3,7 @@ import {View, ScrollView, Text, RefreshControl, TouchableOpacity, Alert, Dimensi
 import { Icon } from 'react-native-elements';
 import {AllHtmlEntities} from 'html-entities';
 import Modal from "react-native-modal";
+import * as Animatable from 'react-native-animatable';
 
 import { connect } from 'react-redux';
 
@@ -16,7 +17,7 @@ import ErrorPopup from '../../components/ErrorPopup/ErrorPopup.component.js';
 import IconButton from '../../components/IconButton/IconButton.component.js';
 import Button from '../../components/Button/Button.component.js';
 
-import {getMyOrders,deleteOrder,subscribe} from './MyOrders.actions.js';
+import {getMyOrders,deleteOrder,subscribe, deleteOrders} from './MyOrders.actions.js';
 
 import moment from 'moment';
 import {filterArray} from '../../helpers/json.js';
@@ -27,12 +28,22 @@ const DETAILS_PERCENTAGE=0.7;
 class MyOrders extends Component{
 	constructor(props){
 		super(props);
-		this.state={showOptions:false,orderIndex:null,showDetails:false,detailsHeight:HIGHT*DETAILS_PERCENTAGE}
+		this.state={
+			showOptions:false,
+			orderIndex:null,
+			showDetails:false,
+			detailsHeight:HIGHT*DETAILS_PERCENTAGE,
+			multiSelect:false,
+			selectedRows:[],
+			allSelect:false
+		}
 		this.moreEqual=new AllHtmlEntities().decode('&#8805');
 		this.lessEqual=new AllHtmlEntities().decode('&#8804');
 	}
-	componentDidMount(){
-		
+	componentDidUpdate(prevProps){
+		if (prevProps.settings.appID!==this.props.settings.appID && this.props.settings.appID){
+			this.props.getMyOrders();
+		}
 	}
 	handleDelete=()=>{
 		const {realtimeData}=this.props.myOrders;
@@ -58,17 +69,105 @@ class MyOrders extends Component{
 						}
 					])
 	}
+	deleteSelected=()=>{
+		const {realtimeData}=this.props.myOrders;
+		const {filter}=this.props;
+		const filteredData=filter?filterArray(realtimeData, filter):realtimeData;
+
+		const {showOptions, orderIndex, selectedRows}=this.state;
+		const message="You're about to delete selected orders, continue?";
+		Alert.alert("My Orders",
+					message,
+					[
+						{
+							text:'OK',
+                            onPress:()=>{
+                                this.setState({
+                                	showOptions:false,
+                                	orderIndex:null, 
+                                	multiSelect:false, 
+                                	allSelect:false, 
+                                	selectedRows:[]
+                                })
+                                const orders=[];
+                                selectedRows.map((order)=>{
+                                	orders.push(filteredData[order].orderID)
+                                })
+                                this.props.deleteOrders(orders)
+                            }
+						},
+						{
+							text:'Cancel',
+							onPress:()=>{
+								this.setState({
+                                	showOptions:false,
+                                	orderIndex:null, 
+                                	multiSelect:false, 
+                                	allSelect:false, 
+                                	selectedRows:[]
+                                })
+							}
+						}
+					])
+	}
+	handleLongPress=(row)=>{
+		const {type}=this.props;
+		if (type==='Active'){
+			this.setState(
+				{multiSelect:true, selectedRows:[row]}
+			)
+		}
+	}
+	handlePress=(index)=>{
+		const {multiSelect, selectedRows}=this.state;
+		if (!multiSelect){
+			this.setState({showDetails:true,orderIndex:index})
+		}
+		else if (multiSelect && selectedRows.length===0){
+			this.setState(
+				{multiSelect:false, selectedRows:[], allSelect:false}
+			)
+		}
+		else if (multiSelect && selectedRows.indexOf(index)>=0){
+			const newRows=[...selectedRows];
+			newRows.splice(newRows.indexOf(index),1);
+			this.setState(
+				{selectedRows:newRows, allSelect:false}
+			)
+		}
+		else if (multiSelect && selectedRows.indexOf(index)<0){
+			this.setState(
+				{selectedRows:[...selectedRows,index], allSelect:false}
+			)
+		}
+	}
 	showMenu=(index)=>{
 		this.setState({showOptions:true,orderIndex:index})
 	}
 	closeMenu=()=>{
 		this.setState({showOptions:false,orderIndex:null})
 	}
-	showDetails=(index)=>{
-		this.setState({showDetails:true,orderIndex:index})
-	}
 	closeDetails=()=>{
 		this.setState({showDetails:false,orderIndex:null, detailsHeight:HIGHT*DETAILS_PERCENTAGE})
+	}
+	selectAll=()=>{
+		const {multiSelect, allSelect}=this.state;
+		if (multiSelect){
+			if (!allSelect){
+				const {realtimeData}=this.props.myOrders;
+				const {filter}=this.props;
+				const allRows=[];
+				const filteredData=filter?filterArray(realtimeData, filter):realtimeData;
+				filteredData.map((row,index)=>allRows.push(index));
+
+				this.setState({
+					selectedRows:allRows,
+					allSelect:true
+				})
+			}else{
+				this.setState({selectedRows:[],allSelect:false})
+			}
+		}
 	}
 	renderMenu=()=>{
 		const {showOptions, orderIndex}=this.state;
@@ -88,6 +187,7 @@ class MyOrders extends Component{
 	}
 	renderRow=(item,index)=>{
 		const {type}=this.props;
+		const {selectedRows}=this.state;
 		var background=(index%2===0)?{backgroundColor:Theme['dark'].primary1}:{backgroundColor:Theme['dark'].primary3}
 		var row;
 		switch (type){
@@ -169,7 +269,9 @@ class MyOrders extends Component{
 					)
 		}
 		return <TouchableOpacity key={index.toString()} 
-								 onPress={()=>this.showDetails(index)}>{row}</TouchableOpacity>
+								 style={(selectedRows.indexOf(index)>=0)?styles.selected:{}}
+								 onPress={()=>this.handlePress(index)}
+								 onLongPress={()=>this.handleLongPress(index)}>{row}</TouchableOpacity>
 	}
 	renderHeader=()=>{
 		const {type}=this.props;
@@ -378,6 +480,35 @@ class MyOrders extends Component{
 		return <RefreshControl 	refreshing={this.props.myOrders.loading}
 								onRefresh={this.props.getMyOrders} />
 	}
+	renderControl=()=>{
+		const {selectedRows, allSelect}=this.state;
+		if (selectedRows.length>0){
+			return (
+				<Animatable.View 	style={styles.control}
+									animation={"slideInDown"} 
+									useNativeDriver 
+									duration={Theme.Transition}>
+					<View style={styles.left}>
+						<Text style={styles.count}>{selectedRows.length}</Text>
+					</View>
+					<View style={styles.right}>
+						<IconButton name="trash"
+									type="feather"
+									color={Theme['dark'].primaryText} 
+									buttonStyle={styles.icon}
+									size={18}
+									onPress={this.deleteSelected}/>
+						<IconButton name="select-all"
+									type="material-community"
+									color={allSelect?Theme['dark'].highlighted:Theme['dark'].primaryText} 
+									buttonStyle={styles.icon}
+									size={18}
+									onPress={this.selectAll}/>
+					</View>
+				</Animatable.View>
+			)
+		}
+	}
 	renderError=()=>{
         const {error}=this.props.myOrders;
         if (error) {
@@ -400,14 +531,17 @@ class MyOrders extends Component{
 		const {loading, data, error, realtimeData}=this.props.myOrders;
 		const {containerStyle}=this.props;
 		return (
-			<ScrollView refreshControl={this.renderRefreshControl()} nestedScrollEnabled={true}>
-				<View style={[styles.container,containerStyle]}>
-					{this.renderOrders()}
-					{this.renderMenu()}
-					{this.renderDetails()}
-					{this.renderError()}
-				</View>
-			</ScrollView>
+			<View>
+				{this.renderControl()}
+				<ScrollView refreshControl={this.renderRefreshControl()} nestedScrollEnabled={true}>
+					<View style={[styles.container,containerStyle]}>
+						{this.renderOrders()}
+						{this.renderMenu()}
+						{this.renderDetails()}
+						{this.renderError()}
+					</View>
+				</ScrollView>
+			</View>
 		)
 	}
 }
@@ -470,22 +604,21 @@ const styles={
 	normal:{
 		color:Theme['dark'].primaryText,
 		fontSize:10,
-		width:'12%',
+		width:'11%',
 		textAlign:'center',
 		fontFamily:Theme['dark'].fontNormal
 	},
 	secondary:{
 		color:Theme['dark'].secondaryText,
 		fontSize:10,
-		width:'12%',
 		textAlign:'center',
 		fontFamily:Theme['dark'].fontNormal
 	},
 	mini:{
-		width:'6%'
+		
 	},
 	large:{
-		width:'15%'
+		
 	},
 	cancelStyle:{
 		backgroundColor:Theme['dark'].disabled
@@ -509,7 +642,7 @@ const styles={
 		flexDirection:'row',
 		alignItems:'center',
 		justifyContent:'space-around',
-		width:'100%',
+		width:'98%',
 		alignSelf:'center',
 		paddingVertical:10
 	},
@@ -563,6 +696,45 @@ const styles={
 	textStyle:{
 		fontSize:12,
 		fontFamily:Theme['dark'].fontNormal
+	},
+	selected:{
+		borderColor:Theme['dark'].primaryText,
+		borderWidth:1,
+		borderStyle:'solid'
+	},
+	control:{
+		flexDirection:'row',
+		height:50,
+		width:'100%',
+		backgroundColor:Theme['dark'].primary1,
+		alignItems:'center',
+		justifyContent:'space-around',
+		zIndex:1,
+		elevation:1
+	},
+	left:{
+		flexDirection:'row',
+		width:'40%',
+		alignItems:'center',
+		justifyContent:'flex-start'
+	},
+	right:{
+		flexDirection:'row',
+		width:'40%',
+		alignItems:'center',
+		justifyContent:'flex-end'
+	},
+	count:{
+		fontFamily:Theme['dark'].fontNormal,
+		color:Theme['dark'].primaryText,
+		fontSize: 14,
+		width:20,
+		height:20,
+		textAlign:'center'
+	},
+	icon:{
+		marginLeft:10,
+		marginRight:10
 	}
 }
 
@@ -573,7 +745,8 @@ MyOrders.defaultProps={
 
 const mapStateToProps=(state)=>{
 	return {
-		myOrders:state.myOrders
+		myOrders:state.myOrders,
+		settings:state.settings
 	}
 }
-export default connect(mapStateToProps,{getMyOrders,deleteOrder,subscribe})(MyOrders);
+export default connect(mapStateToProps,{getMyOrders,deleteOrder,subscribe, deleteOrders})(MyOrders);

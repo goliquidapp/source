@@ -93,8 +93,13 @@ src
 ```
 
 ### 🎉 Building notes
+#### Debug
+- To build *GoLiquid* for debugging purposes and use the **Testnet** exchange of BitMEX, you will have to make sure that the **debug** field in `src/config.js` is set to `true` or you can change the `baseURL` field in the same config file to suite your needs.  
+- run `npm install` and if you're building for iOS, `cd` to `ios` directory and run `pod install`.  
 
-- When creating a production release make sure to set **debug** flag to `false` in `src/config.js`  
+#### Release
+- When creating a production release make sure to set **debug** field to `false` in `src/config.js`.  
+- run `npm install` and if you're building for iOS, `cd` to `ios` directory and run `pod install`.   
 - Follow RN docs in how to sign application for release [here](https://facebook.github.io/react-native/docs/signed-apk-android)
 
 - IOS release:  
@@ -104,7 +109,7 @@ src
   - `cd android && ./gradlew assembleRelease`
 
 - Testing:
-  We use **Cavy** for integration testing.
+  We use **Cavy** for integration testing and **Jest** for unit testing.
   - `npm test`
   - `cavy run-android`
 

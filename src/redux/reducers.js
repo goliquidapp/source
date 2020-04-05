@@ -16,6 +16,7 @@ import recentTrades from '../modules/CurrentPrice/RecentTrades.reducer.js';
 import webScreen from '../modules/WebScreen/WebScreen.reducer.js';
 import notifications from '../modules/Notifications/Notifications.reducer.js';
 import scheduledPopup from '../modules/ScheduledPopup/ScheduledPopup.reducer.js';
+import accounts from '../modules/Accounts/Accounts.reducer.js';
 
 export default combineReducers({
 	orderBook,
@@ -34,5 +35,6 @@ export default combineReducers({
 	recentTrades,
 	webScreen,
 	notifications,
-	scheduledPopup
+	scheduledPopup,
+	accounts
 });

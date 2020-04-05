@@ -12,19 +12,24 @@ import moment from 'moment';
 class ScheduledPopup extends Component{
 	state={visible:false, child:null}
 	componentDidMount(){
-		if (this.props.scheduledPopup.schedule)
+		if (this.props.scheduledPopup.schedule){
+			this.show();
 			this.intervalObj=setInterval(this.show,1000*10);
+		}
 	}
 	componentDidUpdate(prevProps){
 		if ((this.props.scheduledPopup.schedule!==prevProps.scheduledPopup.schedule) && (this.props.scheduledPopup.schedule)){
 			this.intervalObj=setInterval(this.show,1000*10);
 		}
+		if (prevProps.scheduledPopup.show!==this.props.scheduledPopup.show && this.props.scheduledPopup.show){
+			this.show(true);
+		}
 	}
 	componentWillUnmount(){
 		clearInterval(this.intervalObj)
 	}
-	show=()=>{
-		if ((moment().diff(this.props.scheduledPopup.schedule, 'seconds')>0) && !this.state.visible){
+	show=(force=false)=>{
+		if (((moment().diff(this.props.scheduledPopup.schedule, 'seconds')>0) && !this.state.visible) || force){
 			const child=React.cloneElement(this.props.scheduledPopup.children, { onClose: this.hide } );
 			this.setState({visible:true, child});
 		}

@@ -139,7 +139,7 @@ class DonateButton extends Component{
 							</TouchableOpacity>
 						</View>
 						<View style={styles.row}>
-							<TouchableOpacity style={styles.addressContainer} onPress={()=>copyToClipboard(config.BITCOIN_ADDR)}>
+							<TouchableOpacity style={styles.addressContainer} onPress={()=>copyToClipboard(config.ETH_ADDR)}>
 								<Icon
 			                        size={20}
 			                        name={'copy'}

@@ -11,6 +11,14 @@ import {UPDATE_SETTINGS} from '../modules/Settings/Settings.types.js';
 
 import * as Keychain from 'react-native-keychain';
 
+import Theme from '../resources/Theme.js';
+
+import {ASYNC_STORAGE_CRED, 
+		KEYCHAIN_KEY, 
+		CURRENT_ACCOUNT, 
+		ACCOUNTS_META, 
+		LIQUID_FIRST_TIME} from './consts.js';
+
 let _navigator;
 
 const BiometryTypes={
@@ -19,8 +27,12 @@ const BiometryTypes={
 	Fingerprint	:'Fingerprint'
 }
 
-const ASYNC_STORAGE_CRED="LIQUID_ASYNC_CRED";
-const KEYCHAIN_KEY="LIQUID_KEYCHAIN_KEY";
+const DEFAULT_ACCOUNT_META={
+	ID:'primary',
+	color:Theme['dark'].highlighted,
+	name:'Primary',
+	primary:true
+}
 
 export const auth=(verb, path, data='', customAuth={appID:null,appSecret:null})=>new Promise(async (resolve,reject)=>{
 	try{
@@ -93,12 +105,12 @@ export const flush=()=>new Promise(async (resolve, reject)=>{
     if (asyncStorageKeys.length > 0) {
         await AsyncStorage.clear();
     }
-    await Keychain.resetGenericPassword({service:KEYCHAIN_KEY});
+    await Keychain.resetGenericPassword({service:KEYCHAIN_KEY+'_'+DEFAULT_ACCOUNT_META.ID});
     resolve();
 })
 
 export const checkFirstTime=()=>new Promise(async (resolve, reject)=>{
-    const fTime=await AsyncStorage.getItem('Liquid_first_time');
+    const fTime=await AsyncStorage.getItem(LIQUID_FIRST_TIME);
     if (fTime!=='false') resolve(true)
     else resolve(false)
 })
@@ -108,7 +120,7 @@ export const appAuth=()=>new Promise(async (resolve,reject)=>{
          const fTime=await checkFirstTime();
          if (fTime) {
              await flush();
-             await AsyncStorage.setItem('Liquid_first_time','false')
+             await AsyncStorage.setItem(LIQUID_FIRST_TIME,'false')
              resolve()
          }
          else {
@@ -123,11 +135,13 @@ export const appAuth=()=>new Promise(async (resolve,reject)=>{
 
 export const getAppAuth=()=>new Promise(async (resolve,reject)=>{
 	try{
-		const credentials = await Keychain.getGenericPassword({service:KEYCHAIN_KEY});
+		const ID=await AsyncStorage.getItem(CURRENT_ACCOUNT);
+
+		const credentials = await Keychain.getGenericPassword({service:KEYCHAIN_KEY+'_'+ID});
 		var appID, appSecret;
 		if (credentials){
             if (credentials.username && credentials.password){
-                const cipherB64=await AsyncStorage.getItem(ASYNC_STORAGE_CRED);
+                const cipherB64=await AsyncStorage.getItem(ASYNC_STORAGE_CRED+'_'+ID);
                 if (cipherB64){
                     const cipher=utils.convertBase64ToArrayBuffer(cipherB64);
                     const iv  = utils.convertBase64ToArrayBuffer(credentials.username);
@@ -191,11 +205,11 @@ export const saveAppAuth=({appID, appSecret})=>new Promise(async (resolve, rejec
 			const newdata=utils.convertUtf8ToArrayBuffer(data);
 			const cipher=await AES.encrypt(newdata,key,iv);
 			const cipherB64=utils.convertArrayBufferToBase64(cipher)
-			await AsyncStorage.setItem(ASYNC_STORAGE_CRED,cipherB64)
+			await AsyncStorage.setItem(ASYNC_STORAGE_CRED+'_'+DEFAULT_ACCOUNT_META.ID,cipherB64)
 			await Keychain.setGenericPassword(
 				utils.convertArrayBufferToBase64(iv),
 				utils.convertArrayBufferToBase64(key),
-                {service:KEYCHAIN_KEY}
+                {service:KEYCHAIN_KEY+'_'+DEFAULT_ACCOUNT_META.ID}
 			);
 			store.dispatch({
 				type:UPDATE_SETTINGS,
@@ -204,6 +218,8 @@ export const saveAppAuth=({appID, appSecret})=>new Promise(async (resolve, rejec
 					appSecret
 				}
 			})
+			await AsyncStorage.setItem(ACCOUNTS_META,JSON.stringify({accounts:[DEFAULT_ACCOUNT_META]}));
+			await AsyncStorage.setItem(CURRENT_ACCOUNT,DEFAULT_ACCOUNT_META.ID);
 		}
 		resolve({appID,appSecret})
 	}catch(err){
@@ -211,4 +227,125 @@ export const saveAppAuth=({appID, appSecret})=>new Promise(async (resolve, rejec
 			console.log(err)
 		reject(err)
 	}
+})
+
+
+
+export const addSecondaryAccount=({appID, appSecret, accountMeta})=>new Promise(async(resolve, reject)=>{
+	try{
+		const securityLevel=await Keychain.getSecurityLevel();
+		var settings={
+			accessControl: Keychain.ACCESS_CONTROL.USER_PRESENCE,
+			accessible: Keychain.ACCESSIBLE.ALWAYS,
+			securityLevel
+		}
+
+		if (!appID || !appSecret || !accountMeta) throw(new Error('Not all data are provided.'));
+		else {
+			const key = await utils.randomBytes(32);
+			const iv  = await utils.randomBytes(16);
+
+			const metaID = await utils.randomBytes(16);
+			const metaIDB64=utils.convertArrayBufferToBase64(metaID);
+
+			accountMeta.ID=metaIDB64;
+
+			const data=JSON.stringify({appID,appSecret});
+			const newdata=utils.convertUtf8ToArrayBuffer(data);
+			const cipher=await AES.encrypt(newdata,key,iv);
+			const cipherB64=utils.convertArrayBufferToBase64(cipher)
+			await AsyncStorage.setItem(ASYNC_STORAGE_CRED+'_'+accountMeta.ID,cipherB64)
+			await Keychain.setGenericPassword(
+				utils.convertArrayBufferToBase64(iv),
+				utils.convertArrayBufferToBase64(key),
+                {service:KEYCHAIN_KEY+'_'+accountMeta.ID}
+			);
+
+			const {accounts=[]}=JSON.parse(await AsyncStorage.getItem(ACCOUNTS_META));
+			await AsyncStorage.setItem(ACCOUNTS_META,JSON.stringify({accounts:[...accounts, accountMeta]}));
+		}
+		resolve({appID,appSecret})
+	}catch(err){
+		if (config.debug)
+			console.log(err)
+		reject(err)
+	}
+})
+
+export const switchAccount=({ID})=>new Promise(async (resolve, reject)=>{
+	try{
+		const credentials = await Keychain.getGenericPassword({service:KEYCHAIN_KEY+'_'+ID});
+		var appID, appSecret;
+		if (credentials){
+            if (credentials.username && credentials.password){
+                const cipherB64=await AsyncStorage.getItem(ASYNC_STORAGE_CRED+'_'+ID);
+                if (cipherB64){
+                    const cipher=utils.convertBase64ToArrayBuffer(cipherB64);
+                    const iv  = utils.convertBase64ToArrayBuffer(credentials.username);
+                    const key = utils.convertBase64ToArrayBuffer(credentials.password);
+                    const data=await AES.decrypt(cipher,key,iv);
+                    const newdata=utils.convertArrayBufferToUtf8(data);
+                    const appData=JSON.parse(newdata);
+                    appID=appData.appID;
+                    appSecret=appData.appSecret;
+					if (appID && appSecret) {
+						await AsyncStorage.setItem(CURRENT_ACCOUNT,ID);
+	                    store.dispatch({
+							type:UPDATE_SETTINGS,
+							payload:{
+								appID,
+								appSecret
+							}
+						})
+						API.wsConnect.restart();
+					}
+                }
+            }else{
+                throw(new Error('Account not found'));
+            }
+		}else{
+			throw(new Error('Account not found'));
+		}
+		resolve({appID,appSecret})
+	}catch(err){
+		if (config.debug)
+			console.log(err)
+        reject(err);
+	}
+})
+
+export const validateCredentials=({appID, appSecret})=>new Promise(async (resolve, reject)=>{
+	try{
+		const params='';
+		await auth('GET','/user'+params,'',{appID, appSecret});
+		var response=await API.bitmex.get('/user'+params);
+		resolve(true)
+	}catch(err){
+		if (config.debug)
+			console.log(err)
+		resolve(false)
+	}
+})
+
+
+export const removeAccount=({ID})=>new Promise(async (resolve, reject)=>{
+	try{
+		const key = await AsyncStorage.getItem(ASYNC_STORAGE_CRED+'_'+ID);
+	    if (key) {
+	        await AsyncStorage.removeItem(key);
+	    }
+	    const {accounts=[]}=JSON.parse(await AsyncStorage.getItem(ACCOUNTS_META));
+	    accounts.map((account,index)=>{
+	    	if (account.ID===ID)
+	    		accounts.splice(index,1)
+	    })
+		await AsyncStorage.setItem(ACCOUNTS_META,JSON.stringify({accounts:[...accounts]}));
+	    await Keychain.resetGenericPassword({service:KEYCHAIN_KEY+'_'+ID});
+	    resolve();
+	}catch(err){
+		if (config.debug)
+			console.log(err)
+		resolve(false)
+	}
+	
 })

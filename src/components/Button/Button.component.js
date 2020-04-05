@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
 import {View, TouchableOpacity, Text} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import {Icon} from 'react-native-elements';
 
 import Theme from '../../resources/Theme.js';
 
 class Button extends Component{
 	render(){
-		const {onPress, buttonStyle, textStyle, text, children, colors}=this.props;
+		const {onPress, buttonStyle, textStyle, text, children, colors, icon}=this.props;
 		if (colors){
 			return (
 				<LinearGradient colors={colors} style={[styles.button,buttonStyle, styles.gradient]}>
@@ -19,6 +20,7 @@ class Button extends Component{
 		else{
 			return (
 				<TouchableOpacity ref={this.props.ref} onPress={onPress} style={[styles.button,buttonStyle]}>
+					{icon&&<Icon {...icon}/>}
 					<Text style={[styles.text,textStyle]}>{text}</Text>
 					{children}
 				</TouchableOpacity>

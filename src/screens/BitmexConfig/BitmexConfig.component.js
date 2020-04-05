@@ -11,7 +11,7 @@ import {storeAppAuth} from '../../helpers/bitmex.helpers.js';
 
 export default class BitmexConfig extends Component{
 	onClose=()=>{
-		this.props.navigation.navigate('Home')
+		this.props.navigation.navigate('Config')
 	}
 	onReset=()=>{
 		this.props.navigation.navigate('Auth')

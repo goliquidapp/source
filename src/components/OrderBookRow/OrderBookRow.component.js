@@ -5,7 +5,7 @@ import LinearGradient from 'react-native-linear-gradient';
 
 import {Icon} from 'react-native-elements'
 
-class OrderBookRow extends Component{
+class OrderBookRow extends React.PureComponent{
 	format=(x)=>{
     	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 	}

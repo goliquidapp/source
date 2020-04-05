@@ -8,5 +8,10 @@ export default {
 	'FillOrKill':'The order will only execute if its full quantity can be immediately filled.',
 	'TrailingStop':'A Trailing Stop Order is similar to a Stop Market Order, whereby you specify the Trailing Value differential to the Trigger Price, and if triggered then a market order will be placed.',
 	'TakeProfitLimit': 'A Take Profit Limit Order can be used to set a target price on a position. It is like a Stop, but triggers are set in the opposite direction.\n\nUse this to exit a position in profit, or to set an entry point for a new position.',
-	'TakeProfitMarket':'A Take Profit Order can be used to set a target price on a position. It is like a Stop, but triggers are set in the opposite direction.\n\nUse this to exit a position in profit, or to set an entry point for a new position. A Take Profit Order becomes a Market Order once triggered.'
+	'TakeProfitMarket':'A Take Profit Order can be used to set a target price on a position. It is like a Stop, but triggers are set in the opposite direction.\n\nUse this to exit a position in profit, or to set an entry point for a new position. A Take Profit Order becomes a Market Order once triggered.',
+	'ScaleOrder':'A scale order comprises several limit orders at incrementally increasing or decreasing prices. If it is a buy scale order, the limit orders will decrease in price, triggering buys at lower prices as the price starts to fall. With a sell order, the limit orders will increase in price, allowing the trader to take advantage of increasing prices, thereby locking in higher returns.',
+	'Uniform':'Uniform distribution of orders',
+	'Normal':'Normal distribution of orders',
+	'Positive':'Positive distribution of orders',
+	'Negative':'Negative distribution od orders'
 }

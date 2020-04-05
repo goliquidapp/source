@@ -20,6 +20,7 @@ import Stats from '../screens/Stats/Stats.component.js';
 import BitmexConfig from '../screens/BitmexConfig/BitmexConfig.component.js';
 import UISettings from '../screens/UISettings/UISettings.component.js';
 import TradesSettings from '../screens/TradesSettings/TradesSettings.component.js';
+import PublicationsSettings from '../screens/PublicationsSettings/PublicationsSettings.js';
 import DeadManSettings from '../screens/DeadManSettings/DeadManSettings.component.js';
 import Account from '../screens/Account/Account.component.js';
 import Transfer from '../screens/Transfer/Transfer.component.js';
@@ -74,7 +75,14 @@ const OrdersNavigator=createStackNavigator({
 const HomeNavigator=createStackNavigator({
 	Home: 								               { screen: Home, navigationOptions: headers.Home },
 	Orders: 							               { screen: Orders, navigationOptions: headers.Orders },
+  UserLogs:                            { screen: UserLogs, navigationOptions: headers.UserLogs },
   Config:                              { screen: Config, navigationOptions: headers.Config},
+  BitmexConfig:                        { screen: BitmexConfig, navigationOptions: headers.BitmexConfig},
+  UISettings:                          { screen: UISettings, navigationOptions: headers.UISettings},
+  TradesNotificationsSettings:         { screen: TradesSettings, navigationOptions: headers.TradesSettings},
+  PublicationsSettings:                { screen: PublicationsSettings, navigationOptions: headers.PublicationsSettings},
+  DeadManSettings:                     { screen: DeadManSettings, navigationOptions: headers.DeadManSettings},
+  Notifications:                       { screen: Notifications, navigationOptions: headers.Notifications}
 }, animation.normal)
 
 //---------------------------------------------------------s
@@ -94,14 +102,7 @@ const StatsNavigator=createStackNavigator({
 
 const AccountNavigator=createStackNavigator({
 	Account: 		                         { screen: Account, navigationOptions: headers.Account },
-	Transfer:		                         { screen: Transfer, navigationOptions: headers.Transfer },
-  UserLogs:                            { screen: UserLogs, navigationOptions: headers.UserLogs },
-  Config:                              { screen: Config, navigationOptions: headers.Config},
-  BitmexConfig:                        { screen: BitmexConfig, navigationOptions: headers.BitmexConfig},
-  UISettings:                          { screen: UISettings, navigationOptions: headers.UISettings},
-  TradesNotificationsSettings:         { screen: TradesSettings, navigationOptions: headers.TradesSettings},
-  DeadManSettings:                     { screen: DeadManSettings, navigationOptions: headers.DeadManSettings},
-  Notifications:                       { screen: Notifications, navigationOptions: headers.Notifications}
+	Transfer:		                         { screen: Transfer, navigationOptions: headers.Transfer }
 }, animation.normal)
 
 

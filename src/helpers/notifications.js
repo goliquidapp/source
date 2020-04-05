@@ -6,7 +6,9 @@ import PushNotification from 'react-native-push-notification';
 
 import {NOTIFICATION_SHOW} from '../modules/GlobalNotification/GlobalNotification.types.js';
 import {ADD_NOTIFICATION} from '../modules/Notifications/Notifications.types.js';
-import {CLEAR_SCHEDULE, SET_SCHEDULE, SET_COMPONENT} from '../modules/ScheduledPopup/ScheduledPopup.types.js'
+import {CLEAR_SCHEDULE, SET_SCHEDULE, SET_COMPONENT, SET_SHOW} from '../modules/ScheduledPopup/ScheduledPopup.types.js';
+
+import {CURRENT_ACCOUNT} from './consts.js';
 
 import store from '../redux/store.js';
 
@@ -39,24 +41,36 @@ export const notify=async ({title, body, type}, bg=true)=>{
 			Notification.show();
 		}
 	}
-	if (bg){
-		const time=moment().format('lll')
-		store.dispatch({
-			type:ADD_NOTIFICATION,
-			payload:{
-				title,
-				body,
-				time,
-				type
-			}
-		});
-		const data = await AsyncStorage.getItem('notifications');
-		var notifications=[];
-		if (data)
-			notifications=JSON.parse(data).notifications;
-		notifications.push({title,body,type, time});
-		await AsyncStorage.setItem('notifications',JSON.stringify({notifications}));
-	}
+
+	if (bg) cacheNotification({title, body, type});
+}
+
+export const cacheNotification=async ({title, body, type, _id}, notificationData=null)=>{
+    if (_id){
+        const notifications=store.getState().notifications.notifications;
+        const found=notifications.find((n)=>n._id===_id);
+        console.log(found)
+        if (found) return;
+    }
+	const time=moment().format('lll')
+	store.dispatch({
+		type:ADD_NOTIFICATION,
+		payload:{
+			title,
+			body,
+			time,
+			type,
+			_id,
+			notificationData
+		}
+	});
+	const ID=await AsyncStorage.getItem(CURRENT_ACCOUNT);
+	const data = await AsyncStorage.getItem('notifications'+'_'+ID);
+	var notifications=[];
+	if (data)
+		notifications=JSON.parse(data).notifications;
+	notifications.push({title,body,type, _id, time, notificationData});
+	await AsyncStorage.setItem('notifications'+'_'+ID,JSON.stringify({notifications}));
 }
 
 export const clearPopupSchedule=()=>{
@@ -76,3 +90,14 @@ export const schedulePopup=(schedule, children, onClose=clearPopupSchedule)=>{
 	});
 }
 
+
+export const displayPopup=(children)=>{
+	store.dispatch({
+		type: SET_SHOW,
+		payload:{
+			show:true,
+			children,
+			onClose:clearPopupSchedule
+		}
+	})
+}

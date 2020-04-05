@@ -1,8 +1,9 @@
 import {Platform} from 'react-native';
 
-const debug=false;
+const debug=true;
+const debugChannel=true;
 
-const startDate=(new Date('2019-12-18T17:50:00.000Z')).getTime();
+const startDate=(new Date('2020-02-16T06:00:00.000Z')).getTime();
 const now=(new Date()).getTime();
 const diff=(startDate-now)
 
@@ -14,6 +15,7 @@ export default {
 	api:'/api/v1',
 	expire: 1000*60*60,
 	debug,
+    debugChannel,
 	ws:debug?'wss://testnet.bitmex.com/realtime':'wss://www.bitmex.com/realtime',
 	wsHost:debug?'wss://testnet.bitmex.com':'wss://www.bitmex.com',
 	wsPath:'/realtime',

@@ -54,7 +54,8 @@ class Trades extends Component{
 			consts.EXPO_MOVING_AVERAGE,
 			consts.SMOOTHED_MOVING_AVERAGE,
 			consts.MOVING_AVERAGE_CONV_DIVER,
-			consts.ICHIMOKU
+			consts.ICHIMOKU,
+			consts.DEATH_GOLDEN
 		]
 	}
 	componentDidMount(){
@@ -83,6 +84,38 @@ class Trades extends Component{
 			this.getOptions();
 			this.getMarkPosition();
 			this.chart.setOption(this.option);
+		}
+	}
+	handleIndicatorSelect=(val,select)=>{
+		const {selectedIndicators}=this.state;
+		if (select){
+			this.setState({
+				selectedIndicators:[...selectedIndicators, val]
+			},()=>{
+				switch(val){
+					case (consts.DEATH_GOLDEN):
+						const endDate=moment().format();
+						const startDate=moment(endDate).subtract(2,'years').format();
+						const interval='1d';
+						this.setState({startDate,endDate,interval});
+						break;
+					default:
+						this.getOptions();
+						this.chart.setOption(this.option);
+						break;
+				}
+			})
+		}
+		else{
+			var newSelected=[...selectedIndicators];
+			var i=newSelected.indexOf(val);
+			newSelected.splice(i,1);
+			this.setState({
+				selectedIndicators:newSelected
+			},()=>{
+				this.getOptions();
+				this.chart.setOption(this.option);
+			})
 		}
 	}
 	getBollingerBands=()=>{
@@ -309,6 +342,40 @@ class Trades extends Component{
 				}
 	    	)
 	}
+	getDeathGoldenCross=()=>{
+		const {loading, realtimeData, data, error}=this.props.trades;
+		const {startDate, endDate, interval}=this.state;
+		
+		var samples=moment(endDate).diff(moment(startDate), this.format[interval].unit);
+
+		let close=[];
+		data.map((item)=>{
+			close.push(item['close']);
+		})
+
+		const MA200=ma(close, 200);
+
+		this.option.series.push(
+				{
+					name: '200 MA',
+					type: 'line',
+					data: MA200.slice(Math.max(MA200.length - samples, 1)),
+					showSymbol:false
+				}
+	    	)
+		
+		const MA50=ma(close, 50);
+
+		this.option.series.push(
+				{
+					name: '50 MA',
+					type: 'line',
+					data: MA50.slice(Math.max(MA50.length - samples, 1)),
+					showSymbol:false
+				}
+	    	)
+
+	}
 	getMarkPosition=()=>{
 		const {loading, realtimeData, data, error, position}=this.props.trades;
 		if (position[0].isOpen){
@@ -337,7 +404,7 @@ class Trades extends Component{
 		this.chart.clear();
 		const {loading, realtimeData, data, error, position}=this.props.trades;
 		const {startDate, endDate, interval, selectedIndicators, legend, zoom}=this.state;
-		
+
 		const dateFormat=this.format[interval].time;
 
 	    var samples=moment(endDate).diff(moment(startDate), this.format[interval].unit);
@@ -570,6 +637,7 @@ class Trades extends Component{
 	    if (selectedIndicators.indexOf(consts.SMOOTHED_MOVING_AVERAGE)>=0) this.getSmoothedMovingAverage();
 	    if (selectedIndicators.indexOf(consts.MOVING_AVERAGE_CONV_DIVER)>=0) this.getMACD();
 	    if (selectedIndicators.indexOf(consts.ICHIMOKU)>=0) this.getIchimoku();
+	    if (selectedIndicators.indexOf(consts.DEATH_GOLDEN)>=0) this.getDeathGoldenCross();
 	    if (position.length>0) this.getMarkPosition();
 	}
 	renderControl=()=>{
@@ -629,27 +697,7 @@ class Trades extends Component{
 				 		onClose={()=>this.setState({showList:false})}
 						selected={selectedIndicators} 
 						options={this.indicators} 
-						onChange={(val,select)=>{
-							if (select){
-								this.setState({
-									selectedIndicators:[...selectedIndicators, val]
-								},()=>{
-									this.getOptions();
-									this.chart.setOption(this.option);
-								})
-							}
-							else{
-								var newSelected=[...selectedIndicators];
-								var i=newSelected.indexOf(val);
-								newSelected.splice(i,1);
-								this.setState({
-									selectedIndicators:newSelected
-								},()=>{
-									this.getOptions();
-									this.chart.setOption(this.option);
-								})
-							}
-				}}/>
+						onChange={this.handleIndicatorSelect}/>
 			</Popup>
 		)
 	}

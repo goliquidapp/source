@@ -7,7 +7,10 @@ import config from '../../config.js';
 
 import store from '../../redux/store.js';
 
+import {getPosition} from '../Position/Position.actions.js';
+
 import {baseURL} from '../../config.js';
+import {sleep} from '../../helpers/time.js';
 
 export const placeOrder=({side,orderQty,price,clOrdID, ordType, stopPx, pegOffsetValue, timeInForce, leverage, pegPriceType, execInst})=> async dispatch =>{
 	try{
@@ -38,6 +41,34 @@ export const placeOrder=({side,orderQty,price,clOrdID, ordType, stopPx, pegOffse
 			await auth('POST','/position/leverage'+params);
 			response=await API.bitmex.post('/position/leverage'+params);
 		}
+		getPosition()(dispatch);
+	}catch(err){
+		if (config.debug)
+			console.log(err)
+		dispatch({type:PLACE_ORDER_POST_ERROR,payload:err});
+	}
+}
+
+export const placeOrderBulk=({orders}, leverage)=> async dispatch =>{
+	try{
+		var state=store.getState();
+		const {settings}=state;
+		const currency=settings.currency;
+
+		dispatch({type:PLACE_ORDER_POST_STARTED})
+		var params='';
+		const data={
+			orders
+		}
+		await auth('POST','/order/bulk'+params,JSON.stringify(data));
+		var response=await API.bitmex.post('/order/bulk'+params,data);
+		dispatch({type:PLACE_ORDER_POST_FINISHED, payload:response.data});
+		if (response){
+			params=`?symbol=${currency.symbolFull}&leverage=${leverage}`;
+			await auth('POST','/position/leverage'+params);
+			response=await API.bitmex.post('/position/leverage'+params);
+		}
+		getPosition()(dispatch);
 	}catch(err){
 		if (config.debug)
 			console.log(err)

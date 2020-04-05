@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>L1qu1d</string>
+	<string>GoLiquid</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -17,17 +17,18 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>1.13</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>94</string>
+	<string>139</string>
 	<key>FIRAnalyticsDebugEnabled</key>
 	<true/>
 	<key>FirebaseScreenReportingEnabled</key>
 	<true/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
+		<string>itms-apps</string>
 		<string>bitcoin</string>
 		<string>otpauth</string>
 	</array>

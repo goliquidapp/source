@@ -27,6 +27,11 @@ export class Deposit extends Component{
 	componentDidMount(){
 		this.props.getDepositAddress();
 	}
+	componentDidUpdate(prevProps){
+		if (prevProps.settings.appID!==this.props.settings.appID && this.props.settings.appID){
+			this.props.getDepositAddress();
+		}
+	}
 	shareQR=()=>{
         this.qrCode.toDataURL(async(data)=>{
             try{
@@ -170,7 +175,8 @@ const styles={
 
 const mapStateToProps=(state)=>{
 	return {
-		deposit:state.deposit
+		deposit:state.deposit,
+		settings:state.settings
 	}
 }
 export default connect(mapStateToProps,{getDepositAddress})(Deposit);

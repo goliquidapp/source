@@ -17,6 +17,8 @@ import Button from '../../components/Button/Button.component.js';
 import Input from '../../components/Input/Input.component.js';
 import Popup from '../../components/Popup/Popup.component.js';
 
+import { orderBook} from '../../helpers/finance.js';
+
 import { subscribe, updateLeverage, closePosition, getPosition } from './Position.actions.js';
 
 const HEIGHT=Dimensions.get('window').height
@@ -28,6 +30,11 @@ class Position extends Component{
 		this.props.subscribe();
 		this.props.getPosition();
 	}
+	getBuyPrice=()=>{
+    	const {realtimeData}=this.props.orderBook;
+    	const buyValue=orderBook(realtimeData).buy.max;
+    	return buyValue
+    }
 	setLeverage=(value,index)=>{
 		const {realtimeData}=this.props.position;
 		this.props.updateLeverage(value, realtimeData[index].symbol);
@@ -46,7 +53,7 @@ class Position extends Component{
 		else if (realtimeData.length===0){
 			return (
 				<View style={styles.row}>
-					<Text style={styles.value}>No open positions</Text>
+					<Text style={styles.subtitle}>No open positions</Text>
 				</View>
 				)
 		}
@@ -267,9 +274,12 @@ class Position extends Component{
 						</Animatable.View>
 						<Input  textStyle={styles.textStyle} 
 								keyboardType={"number-pad"} 
+								counter={true}
 								placeholder={"Limit Price (Optional)"}
 								placeholderTextColor={Theme['dark'].secondaryText}
-								value={price}
+								value={price?price.toString():price}
+								autofill={this.getBuyPrice}
+								autofillIcon={{name:"usd",type:"font-awesome"}}
 								onChangeText={(value)=>this.setState({price:value})}/>
 						<View style={styles.row}>
 							<Button buttonStyle={styles.button} 
@@ -303,6 +313,17 @@ class Position extends Component{
 			</Overlay>
 		)
 	}
+	renderArrows=()=>{
+		const {loading, realtimeData}=this.props.position;
+		if (!loading && realtimeData.length>1){
+			return (
+				[
+					<Icon key={'0'} name={'chevron-left'} type={'entypo'} containerStyle={styles.arrowLeft} color={Theme['dark'].secondaryText}/>,
+					<Icon key={'1'} name={'chevron-right'} type={'entypo'} containerStyle={styles.arrowRight} color={Theme['dark'].secondaryText}/>
+				]
+			)
+		}
+	}
 	renderError=()=>{
         const {error}=this.props.position;
         if (error) {
@@ -328,6 +349,7 @@ class Position extends Component{
 				{this.renderTitle()}
 				{this.renderPosition()}
 				{this.renderPopup()}
+				{this.renderArrows()}
 				{this.renderOverlay()}
 				{this.renderError()}
 			</Animatable.View>
@@ -479,7 +501,7 @@ const styles={
 		justifyContent:'space-around',
 		padding:20,
 		width:'100%',
-		height:300,
+		height:400,
 		marginLeft:'auto',
 		marginRight:'auto',
 		backgroundColor:Theme['dark'].disabled
@@ -514,12 +536,23 @@ const styles={
 		color:Theme['dark'].secondaryText,
 		fontSize:14,
 		fontFamily:Theme['dark'].fontNormal
+	},
+	arrowLeft:{
+		position:'absolute',
+		left:5,
+		top:'50%'
+	},
+	arrowRight:{
+		position:'absolute',
+		right:5,
+		top:'50%'
 	}
 }
 
 const mapStateToProps=(state)=>{
 	return {
-		position:state.position
+		position:state.position,
+		orderBook:state.orderBook
 	}
 }
 export default connect(mapStateToProps,{subscribe, updateLeverage, closePosition, getPosition})(Position);

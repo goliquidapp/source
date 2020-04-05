@@ -100,7 +100,7 @@ class OrderBook extends Component{
 								 priceStyle={styles.row[side]}
 								 reverse={side==='Sell'}/>)
 		}
-		return rows;
+		return side==='Sell'?rows.reverse():rows;
 	}
 	renderRefreshControl=()=>{
 		return <RefreshControl  refreshing={this.props.orderBook.loading}

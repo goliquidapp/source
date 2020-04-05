@@ -13,6 +13,8 @@ import {auth} from '../../helpers/bitmex.helpers.js';
 import config from '../../config.js';
 import {notifyUpdate, notifyInsert} from './MyOrders.helpers.js';
 
+import {getPosition} from '../Position/Position.actions.js';
+
 export const getMyOrders=()=> async dispatch =>{
 	try{
 		dispatch({type:MYORDERS_GET_STARTED});
@@ -46,6 +48,23 @@ export const deleteOrder=({orderID})=> async dispatch =>{
 	}
 }
 
+export const deleteOrders=(ordersIDs)=> async dispatch =>{
+	try{
+		dispatch({type:MYORDERS_GET_STARTED})
+		const params='';
+		const data={
+			orderID:ordersIDs
+		};
+		await auth('DELETE','/order'+params,JSON.stringify(data));
+		var response=await API.bitmex.delete('/order'+params,{data});
+		getMyOrders()(dispatch)
+	}catch(err){
+		if (config.debug)
+			console.log(JSON.stringify(err))
+		dispatch({type:MYORDERS_GET_ERROR,payload:err})
+	}
+}
+
 export const subscribe=()=> dispatch =>{
 	try{
 		dispatch({type:MYORDERS_WS_STARTED})
@@ -64,6 +83,7 @@ export const handleMessage= (e) => dispatch =>{
 	}else if (action==='update'){
 		dispatch({type:MYORDERS_WS_UPDATE, payload:data})
 		notifyUpdate(data);
+		getPosition()(dispatch);
 	}else if (action==='delete'){
 		dispatch({type:MYORDERS_WS_DELETE, payload:data})
 	}

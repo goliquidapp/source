@@ -1,3 +1,4 @@
 export const CLEAR_SCHEDULE	=	'CLEAR_SCHEDULE'
 export const SET_SCHEDULE	=	'SET_SCHEDULE'
 export const SET_COMPONENT	=	'SET_COMPONENT'
+export const SET_SHOW		=	'SET_SHOW'

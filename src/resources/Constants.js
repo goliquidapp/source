@@ -9,7 +9,8 @@ export const privacyPolicy={
 }
 export const help={
 	DEAD_MAN_HELP:'BitMEX offers “Dead Man’s Switch” functionality to help prevent unexpected losses from network malfunctions. If you are putting up significant risk on BitMEX, it can be nerve-wracking to think of what might happen if you or your datacenter loses connectivity.\n\nAdvanced users of BitMEX should use this operation. A common use pattern is to set a timeout of 60 seconds, and call it every 15 seconds. This gives you sufficient wiggle room to keep your orders open in case of a network hiccup, while still offering significant protection in case of a larger outage. Of course, the parameters are up to you.',
-	TRADES_NOTIF:'Receive push notifications whenever a high size trades are taking place.'
+	TRADES_NOTIF:'Receive push notifications whenever a high size trades are taking place.',
+	PUBS_NOTIF:'Receive push notifications about articles and tweets related to crypto currencies in addition to sentiment analysis.'
 }
 
 export const notifications={

@@ -8,6 +8,7 @@ import Theme from '../../resources/Theme.js';
 import Wallet from '../../modules/Wallet/Wallet.component.js';
 import Balance from '../../modules/Balance/Balance.component.js';
 import Deposit from '../../modules/Deposit/Deposit.component.js';
+import Accounts from '../../modules/Accounts/Accounts.component.js';
 
 import Button from '../../components/Button/Button.component.js';
 
@@ -19,6 +20,7 @@ export default class Account extends Component{
 		return (
 				<LinearGradient colors={[Theme['dark'].primary1,  Theme['dark'].primary2, Theme['dark'].primary1]} style={styles.container}>
 					<ScrollView>
+						<Accounts/>
 						<Balance/>
 						<Wallet/>
 						<Deposit/>

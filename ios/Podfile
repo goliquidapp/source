@@ -41,6 +41,10 @@ target 'bitmex_trading' do
   pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
 
 
+  pod 'ReactNativeKeyboardInput', :path => '../node_modules/react-native-keyboard-input'
+
+  pod 'ReactNativeKeyboardTrackingView', :path => '../node_modules/react-native-keyboard-tracking-view'
+
   target 'bitmex_tradingTests' do
     inherit! :search_paths
     # Pods for testing

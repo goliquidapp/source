@@ -4,8 +4,31 @@ import Theme from '../resources/Theme.js';
 import IconButton from '../components/IconButton/IconButton.component.js';
 import {help} from '../resources/Constants.js';
 import DonateButton from '../components/DonateButton/DonateButton.component.js';
+import store from '../redux/store.js';
 
 import config from '../config.js';
+
+const NotificationIcon=({navigation})=>{
+	var state=store.getState();
+    const {settings}=state;
+    const {publicationNotifications, highOrdersNotifications}=settings.notificationsSettings;
+
+	const notification=(publicationNotifications&&highOrdersNotifications)?
+							'notifications-active':
+							(publicationNotifications||highOrdersNotifications)?
+							'notifications':
+							'notifications-off'
+	return (
+		<View>
+			<IconButton name={notification}
+			            size={20}
+			            color={Theme['dark'].primaryText}
+			            type={"material-icons"}
+			            buttonStyle={styles.button}
+			            onPress={()=>navigation.navigate('Notifications')}/>
+		</View>
+	)
+}
 
 export default{
 	Home:({ navigation }) => ({
@@ -17,11 +40,20 @@ export default{
 	    	fontFamily:Theme['dark'].fontNormal
 	    },
 	    headerTintColor: Theme['dark'].primaryText,
-        headerRight: <DonateButton/>,
-        headerLeft: <TouchableOpacity style={styles.rowLeft} onPress={()=>navigation.navigate('Config')}>
+        headerRight:<View style={styles.rowRight}>
+                              {config.testFlight&&<NotificationIcon navigation={navigation}/>}
+                              
+                              <IconButton name="cog"
+                                  size={20}
+                                  color={Theme['dark'].primaryText}
+                                  type={"entypo"}
+                                  buttonStyle={styles.button}
+                                  onPress={()=>navigation.navigate('Config')}/>
+                    </View>,
+        headerLeft: <View style={styles.rowLeft}>
 			        	<Image style={styles.logo} source={require('../resources/icons/icon.png')}/>
 			        	<Text style={styles.title}>Liquid</Text>
-			        </TouchableOpacity>
+			        </View>
 	}),
 	PlaceOrder:({navigation}) => ({
 		title: "Place Order",
@@ -49,7 +81,7 @@ export default{
 	    headerTintColor: Theme['dark'].primaryText
 	}),
 	Config:({navigation}) => ({
-		title: "Config",
+		title: "Settings",
 		headerStyle: {
 	    	backgroundColor: Theme['dark'].primary1
 	    },
@@ -104,6 +136,22 @@ export default{
 	    						 buttonStyle={styles.button} 
 	    						 onPress={()=>Alert.alert("Help", help.TRADES_NOTIF)}/>
 	}),
+	PublicationsSettings:({navigation}) => ({
+		title: "Publications Notifications",
+		headerStyle: {
+	    	backgroundColor: Theme['dark'].primary1
+	    },
+	    headerTitleStyle:{
+	    	fontFamily:Theme['dark'].fontNormal
+	    },
+	    headerTintColor: Theme['dark'].primaryText,
+	    headerRight: <IconButton name="help-circle" 
+	    						 size={20} 
+	    						 color={Theme['dark'].primaryText} 
+	    						 type={"feather"} 
+	    						 buttonStyle={styles.button} 
+	    						 onPress={()=>Alert.alert("Help", help.PUBS_NOTIF)}/>
+	}),
 	DeadManSettings:({navigation}) => ({
 		title: "Dead-Man Settings",
 		headerStyle: {
@@ -139,24 +187,7 @@ export default{
 	    	fontFamily:Theme['dark'].fontNormal
 	    },
 	    headerTintColor: Theme['dark'].primaryText,
-	    headerRight:<View style={styles.rowRight}>
-                              {
-                                  config.testFlight&&
-                                  <IconButton name="notification"
-                                    size={20}
-                                    color={Theme['dark'].primaryText}
-                                    type={"entypo"}
-                                    buttonStyle={styles.button}
-                                    onPress={()=>navigation.navigate('Notifications')}/>
-                              }
-                              
-                              <IconButton name="cog"
-                                  size={20}
-                                  color={Theme['dark'].primaryText}
-                                  type={"entypo"}
-                                  buttonStyle={styles.button}
-                                  onPress={()=>navigation.navigate('Config')}/>
-                    </View>
+	    headerRight: <DonateButton/>
 	}),
 	Transfer:({navigation}) => ({
 		title: "Withdraw",
