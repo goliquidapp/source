@@ -10,7 +10,12 @@ jobs:
 
     steps:
       - checkout
-
+      - run:
+          name: cloning private repo of distribution cert
+          command: git clone git@github.com:evilqubit/Fastlane-SharedKeys.git ~/Library/GoLiquid-certs/
+      - run:
+          name: copy certs to app folder
+          command: rsync -av --exclude=".*" ~/Library/GoLiquid-certs/Fastlane-SharedKeys ~/goliquid-app/ios/builds
       - run:
           name: set Ruby version
           command:  echo "ruby-2.4" > ~/.ruby-version
