@@ -16,12 +16,22 @@ jobs:
       - run:
           name: copy certs to app folder
           command: rsync -av --exclude=".*" ~/Library/GoLiquid-certs/ ~/goliquid-app/ios/builds/
+
       - run:
-          name: set Ruby version
-          command:  echo "ruby-2.4" > ~/.ruby-version
+          name: create new keychain
+          command: |
+            security create-keychain -p "" temporary
+            security default-keychain -s temporary
+            security unlock-keychain -p "" temporary
+            security set-keychain-settings -lut 7200 temporary
+
       - run:
           name: print code signing credentials status 
           command: security find-identity -v -p codesigning
+      
+      - run:
+          name: set Ruby version
+          command:  echo "ruby-2.4" > ~/.ruby-version
 
       - restore_cache:
           key: npm-v1-{{ checksum "package-lock.json" }}-{{ arch }}
