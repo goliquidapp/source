@@ -55,6 +55,4 @@ workflows:
   version: 2
   ios:
     jobs:
-      - ios:
-          requires:
-            - node
+      - ios
