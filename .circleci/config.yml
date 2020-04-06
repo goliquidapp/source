@@ -26,6 +26,10 @@ jobs:
             security set-keychain-settings -lut 7200 temporary
 
       - run:
+          name: install copied certs
+          command: security import ~/goliquid-app/ios/builds/H83CWZN6X5.p12 -t egg -k temporary -P "" -A
+
+      - run:
           name: print code signing credentials status 
           command: security find-identity -v -p codesigning
       
