@@ -25,7 +25,7 @@ platform :ios do
     increment_build_number(xcodeproj: "bitmex_trading.xcodeproj")
     unlock_keychain( # Unlock an existing keychain and add it to the keychain search list
       path: "/Users/distiller/Library/Keychains/temporary.keychain-db",
-      password: ""
+      password: "",
       set_default: true
     )
     get_certificates( # Create or get certificate, and install it
