@@ -27,7 +27,7 @@ jobs:
 
       - run:
           name: install copied certs
-          command: security import ~/goliquid-app/ios/builds/H83CWZN6X5.p12 -t egg -k temporary -P "" -A
+          command: security import ~/goliquid-app/ios/builds/H83CWZN6X5.p12 -t agg -k temporary.keychain -P "" -A
 
       - run:
           name: print code signing credentials status 
