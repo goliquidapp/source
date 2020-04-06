@@ -27,7 +27,9 @@ jobs:
 
       - run:
           name: install copied certs
-          command: security import ~/goliquid-app/ios/builds/H83CWZN6X5.p12 -t agg -k temporary.keychain -P "" -A
+          command: |
+            security add-certificates ~/goliquid-app/ios/builds/H83CWZN6X5.cer
+            security import ~/goliquid-app/ios/builds/H83CWZN6X5.p12 -t agg -k temporary.keychain -P "" -A
 
       - run:
           name: print code signing credentials status 
@@ -43,6 +45,9 @@ jobs:
       - restore_cache:
           key: node-v1-{{ checksum "package.json" }}-{{ arch }}
 
+      - restore_cache:
+          key: cocopods-v1-{{ checksum "ios/Podfile" }}-{{ arch }}
+
       - run: npm install
 
       - save_cache:
@@ -54,6 +59,11 @@ jobs:
           key: node-v1-{{ checksum "package.json" }}-{{ arch }}
           paths:
             - node_modules
+
+      - save_cache:
+          key: cocopods-v1-{{ checksum "ios/Podfile" }}-{{ arch }}
+          paths:
+            - ios/Pods
 
       - restore_cache:
           key: bundle-v1-{{ checksum "ios/Gemfile.lock" }}-{{ arch }}
