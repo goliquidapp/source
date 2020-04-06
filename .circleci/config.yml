@@ -73,7 +73,9 @@ jobs:
             - vendor/bundle
 
       - run:
-          command: bundle exec fastlane beta
+          command: |
+            bundle update fastlane 
+            bundle exec fastlane beta
           working_directory: ios
 
       - save_cache:
