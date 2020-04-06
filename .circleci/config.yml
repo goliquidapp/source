@@ -1,30 +1,5 @@
 version: 2.1
 jobs:
-  node:
-    working_directory: ~/goliquid-app
-    docker:
-      - image: circleci/node:12
-    steps:
-      - checkout
-
-      - restore_cache:
-          key: npm-v1-{{ checksum "package-lock.json" }}-{{ arch }}
-
-      - restore_cache:
-          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
-
-      - run: npm install
-
-      - save_cache:
-          key: npm-v1-{{ checksum "package-lock.json" }}-{{ arch }}
-          paths:
-            - ~/.cache/npm
-
-      - save_cache:
-          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
-          paths:
-            - node_modules
-
   ios:
     macos:
       xcode: "11.4"
@@ -78,9 +53,8 @@ jobs:
 
 workflows:
   version: 2
-  node-ios:
+  ios:
     jobs:
-      - node
       - ios:
           requires:
             - node
