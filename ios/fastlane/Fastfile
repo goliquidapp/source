@@ -23,6 +23,7 @@ platform :ios do
   lane :beta do
     cocoapods(use_bundle_exec:false)
     increment_build_number(xcodeproj: "bitmex_trading.xcodeproj")
+    unlock_keychain
     get_certificates( # Create or get certificate, and install it
       output_path: "./builds" # Download certificate in the build folder (you don't need to create the folder)
     )
