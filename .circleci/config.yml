@@ -20,8 +20,8 @@ jobs:
           name: set Ruby version
           command:  echo "ruby-2.4" > ~/.ruby-version
       - run:
-          name: print folder structure
-          command: cd ~/goliquid-app/ios/builds && ls -la
+          name: print code signing credentials status 
+          command: security find-identity -v -p codesigning
 
       - restore_cache:
           key: npm-v1-{{ checksum "package-lock.json" }}-{{ arch }}
