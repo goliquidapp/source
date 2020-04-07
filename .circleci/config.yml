@@ -20,16 +20,14 @@ jobs:
       - run:
           name: create new keychain
           command: |
-            security create-keychain -p "" temporary.keychain
-            security default-keychain -s temporary.keychain
-            security unlock-keychain -p "" temporary.keychain
-            security set-keychain-settings -lut 7200 temporary.keychain
+            security unlock-keychain -p "circle" login.keychain
+            security set-keychain-settings -lut 7200 login.keychain
 
       - run:
           name: install copied certs
           command: |
             security add-certificates ~/goliquid-app/ios/builds/H83CWZN6X5.cer
-            security import ~/goliquid-app/ios/builds/H83CWZN6X5.p12 -t agg -k temporary.keychain -P "" -A
+            security import ~/goliquid-app/ios/builds/H83CWZN6X5.p12 -t agg -k login.keychain -P "" -A
 
       - run:
           name: print code signing credentials status 
