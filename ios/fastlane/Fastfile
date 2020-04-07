@@ -9,6 +9,6 @@ platform :ios do
   desc "Testflight build"
   lane :testflight do
     match(type: "appstore")
-    gym(export_method: "appstore")
+    gym(export_method: "app-store")
   end
 end
