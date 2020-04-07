@@ -907,7 +907,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 145;
+				CURRENT_PROJECT_VERSION = 147;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = UK3S3D6VYH;
 				ENABLE_BITCODE = NO;
@@ -972,7 +972,7 @@
 				CODE_SIGN_ENTITLEMENTS = bitmex_trading/bitmex_trading.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 145;
+				CURRENT_PROJECT_VERSION = 147;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = UK3S3D6VYH;
 				ENABLE_BITCODE = NO;
