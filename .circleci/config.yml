@@ -1,88 +1,22 @@
+# .circleci/config.yml
 version: 2.1
 jobs:
-  ios:
+  testflight:
     macos:
-      xcode: "11.4"
-    working_directory: ~/goliquid-app
-
-    # use a --login shell so our "set Ruby version" command gets picked up for later steps
-    shell: /bin/bash --login -o pipefail
-
+      xcode: 11.4.0
+    environment:
+      FL_OUTPUT_DIR: output
+      FASTLANE_LANE: testflight
     steps:
       - checkout
+      - run: bundle install
       - run:
-          name: cloning private repo of distribution cert
-          command: git clone git@github.com:evilqubit/Fastlane-SharedKeys.git ~/Library/GoLiquid-certs/
-      - run:
-          name: copy certs to app folder
-          command: rsync -av --exclude=".*" ~/Library/GoLiquid-certs/ ~/goliquid-app/ios/builds/
-
-      - run:
-          name: create new keychain
-          command: |
-            security unlock-keychain -p "circle" login.keychain
-            security set-keychain-settings -lut 7200 login.keychain
-
-      - run:
-          name: install copied certs
-          command: |
-            security add-certificates ~/goliquid-app/ios/builds/H83CWZN6X5.cer
-            security import ~/goliquid-app/ios/builds/H83CWZN6X5.p12 -t agg -k login.keychain -P "" -A
-
-      - run:
-          name: print code signing credentials status 
-          command: security find-identity -v -p codesigning
-      
-      - run:
-          name: set Ruby version
-          command:  echo "ruby-2.4" > ~/.ruby-version
-
-      - restore_cache:
-          key: npm-v1-{{ checksum "package-lock.json" }}-{{ arch }}
-
-      - restore_cache:
-          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
-
-      - restore_cache:
-          key: cocopods-v1-{{ checksum "ios/Podfile" }}-{{ arch }}
-
-      - run: npm install
-
-      - save_cache:
-          key: npm-v1-{{ checksum "package-lock.json" }}-{{ arch }}
-          paths:
-            - ~/.cache/npm
-
-      - save_cache:
-          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
-          paths:
-            - node_modules
-
-      - restore_cache:
-          key: bundle-v1-{{ checksum "ios/Gemfile.lock" }}-{{ arch }}
-
-      - run:
-          command: bundle install
-          working_directory: ios
-
-      - save_cache:
-          key: bundle-v1-{{ checksum "ios/Gemfile.lock" }}-{{ arch }}
-          paths:
-            - vendor/bundle
-
-      - run:
-          command: |
-            bundle update fastlane 
-            bundle exec fastlane beta
-          working_directory: ios
-
-      - save_cache:
-          key: cocopods-v1-{{ checksum "ios/Podfile" }}-{{ arch }}
-          paths:
-            - ios/Pods
+          name: Fastlane
+          command: bundle exec fastlane $FASTLANE_LANE
+      - store_artifacts:
+          path: output
 
 workflows:
-  version: 2
-  ios:
+  testflight:
     jobs:
-      - ios
+      - testflight
