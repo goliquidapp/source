@@ -50,6 +50,7 @@ jobs:
 
       - run:
           command: |
+            bundle exec pod install
             bundle update fastlane 
             bundle exec fastlane beta
           working_directory: ios
