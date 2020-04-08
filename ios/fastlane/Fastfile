@@ -8,7 +8,7 @@ platform :ios do
 
   desc "Testflight build"
   lane :testflight do
-    match(type: "appstore")
-    gym(export_method: "app-store")
+    match(type: "appstore", readonly: is_ci)
+    gym(scheme: "bitmex_trading")
   end
 end
