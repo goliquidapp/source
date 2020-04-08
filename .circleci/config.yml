@@ -51,7 +51,7 @@ jobs:
       - run:
           command: |
             bundle update fastlane 
-            bundle exec fastlane testflight
+            bundle exec fastlane beta
           working_directory: ios
 
       - save_cache:
