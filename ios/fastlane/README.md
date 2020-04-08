@@ -16,9 +16,9 @@ or alternatively using `brew cask install fastlane`
 
 # Available Actions
 ## iOS
-### ios testflight
+### ios beta
 ```
-fastlane ios testflight
+fastlane ios beta
 ```
 Testflight build
 
