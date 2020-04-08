@@ -7,7 +7,7 @@ platform :ios do
   end
 
   desc "Testflight build"
-  lane :testflight do
+  lane :beta do
     match(type: "appstore", readonly: is_ci)
     gym(scheme: "bitmex_trading")
   end
