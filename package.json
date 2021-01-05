@@ -20,7 +20,7 @@
     "@react-native-firebase/app": "^6.3.4",
     "@react-native-firebase/crashlytics": "^6.3.4",
     "@react-native-firebase/messaging": "^6.3.4",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "axios-retry-interceptor": "^1.1.0",
     "bit_mex_api": "^1.2.1",
     "bollinger-bands": "^3.0.1",
