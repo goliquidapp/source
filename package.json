@@ -82,7 +82,7 @@
     "eslint": "^6.4.0",
     "hermes-engine": "^0.3.0",
     "jest": "^24.9.0",
-    "jsdom": "^15.1.1",
+    "jsdom": "^16.5.0",
     "metro-react-native-babel-preset": "^0.56.0",
     "mock-socket": "^9.0.2",
     "react-dom": "^16.8.6",
