@@ -28,7 +28,7 @@
     "ichimoku": "^1.0.4",
     "macd": "^1.0.2",
     "mathjs": "^6.2.2",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "query-string": "^6.8.3",
     "react": "16.8.6",
     "react-native": "0.60.5",
